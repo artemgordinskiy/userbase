@@ -1,0 +1,77 @@
+<?php
+$this->title = "Пользователи";
+$this->headTitle($this->title);
+?>
+<div class="btn-group expiration-filter-dropdown">
+    <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">По дате <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        <li>
+            <a href="<?php echo $this->url(array('expiration'=>'expired')); ?>">
+                Просроченные
+            </a>
+        </li>
+        <li>
+            <a href="<?php echo $this->url(array('expiration'=>'not-expired')); ?>">
+                Непросроченные
+            </a>
+        </li>
+        <li class="divider"></li>
+        <li>
+            <a href="/customers/">Все</a>
+        </li>
+    </ul>
+</div>
+
+<div class="btn-group groups-dropdown-filter">
+    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">По группам <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+        <?php foreach($this->groups as $group): ?>
+        <li>
+            <a href="<?php echo $this->url(array('filterByID'=>$group->id)); ?>">
+                <?php echo $this->escape($group->name); ?>
+            </a>
+        </li>
+        <?php endforeach; ?>
+        <li class="divider"></li>
+        <li>
+            <a href="/customers/">Все</a>
+        </li>
+    </ul>
+</div>
+
+<?php if(count($this->customers) > 0): ?>
+    <table id='resultsTable'>
+        <tr class='tableData'>
+            <th><a title='Сортировать по ID' href='<?php echo $this->url(array('sort'=>'id')) ?>'>ID</a></th>
+            <th><a title='Сортировать по логину' href='<?php echo $this->url(array('sort'=>'login')) ?>'>Логин</th>
+            <th><a title='Сортировать по паролю' href='<?php echo $this->url(array('sort'=>'password')) ?>'>Пароль</th>
+            <th><a title='Сортировать по e-mail' href='<?php echo $this->url(array('sort'=>'email')) ?>'>E-mail</th>
+            <th><a title='Сортировать по группе' href='<?php echo $this->url(array('sort'=>'group_name')) ?>'>Группа</th>
+            <th><a title='Сортировать по дате просрочки аккаунта' href='<?php echo $this->url(array( 'sort'=>'acc_exp_date')) ?>'>Активен до</th>
+            <!-- <th>Аватар</th> -->
+            <th>&nbsp;</th>
+        </tr>
+        <?php foreach($this->customers as $customer) : ?>
+        <tr>
+            <td><?php echo $this->escape($customer->id);?></td>
+            <td><?php echo $this->escape($customer->login);?></td>
+            <td><?php echo $this->escape($customer->password);?></td>
+            <td><?php echo $this->escape($customer->email);?></td>
+            <td><?php echo $this->escape($customer->group_name);?></td>
+            <td><?php echo $this->escape($customer->acc_exp_date);?></td>
+            <td class='listActions'>
+                <a title='Изменить' href="<?php echo $this->url(array('action'=>'edit', 'id'=>$customer->id));?>"><div class='icon-cog'></div></a>
+                <a title='Удалить' href="<?php echo $this->url(array('action'=>'delete', 'id'=>$customer->id));?>"><div class='icon-remove'></div></a>
+            </td>
+        </tr>
+
+        <?php endforeach; ?>
+    </table>
+    <br />
+    <?php echo $this->paginationControl($this->customers, 'Sliding', 'paginator.phtml'); ?>
+<?php else: ?>
+    <br />
+    <br />
+    <h1 style="text-align: center; font-size: 16pt;">Извините, но по этим условиям ничего нет :(</h1>
+    <h1 style="text-align: center; font-size: 16pt; text-decoration: underline;"><a href="/customers/">Огласить весь список</a>? </h1>
+<?php endif; ?>

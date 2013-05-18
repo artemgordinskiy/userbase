@@ -1,0 +1,22 @@
+<?php
+$this->title = "Группы";
+$this->headTitle($this->title);
+?>
+<table id='groupsTable'>
+    <tr class='tableData'>
+        <th><a title='Сортировать по ID' href='<?php echo $this->url(array('sort'=>'id')) ?>'>Код</a></th>
+        <th><a title='Сортировать по названию' href='<?php echo $this->url(array('sort'=>'name')) ?>'>Название</a></th>
+        <th>&nbsp;</th>
+    </tr>
+    <?php foreach($this->groups as $group) : ?>
+    <tr>
+        <td><?php echo $this->escape($group->id);?></td>
+        <td><?php echo $this->escape($group->name);?></td>
+        <td class='listActions'>
+            <a title='Изменить' href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'edit', 'id'=>$group->id));?>"><div class='icon-cog'></div></a>
+            <a title='Удалить' href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'delete', 'id'=>$group->id));?>"><div class='icon-remove'></div></a>
+        </td>
+    <?php endforeach; ?>
+</table>
+<br />
+<?php echo $this->paginationControl($this->groups, 'Sliding', 'paginator.phtml'); ?>

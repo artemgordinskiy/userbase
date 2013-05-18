@@ -1,0 +1,28 @@
+<?php if ($this->pageCount): ?>
+<div class="pagination pagination-centered">
+    <ul>
+        <!-- Предыдущая страница -->
+        <?php if (isset($this->previous)): ?>
+            <li><a href="<?php echo  $this->url(array('page' => $this->previous)); ?>">«</a></li>
+        <?php else: ?>
+            <!-- «Выключенная» ссылка на предыдущую страницу -->
+            <li class="disabled"><a>«</a></li>
+        <?php endif; ?>
+        <!-- Пронумерованные ссылки на страницы -->
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($page != $this->current): ?>
+                <li><a href="<?php echo $this->url(array('page' => $page)); ?>"><?php echo $page; ?></a></li>
+            <?php else: ?>
+                <li class="active"><a><?php echo $page; ?></a></li>
+            <?php endif; ?>
+        <?php endforeach; ?>
+        <!-- Следующая страница -->
+        <?php if (isset($this->next)): ?>
+            <li><a href="<?php echo $this->url(array('page' => $this->next)); ?>">»</a></li>
+        <?php else: ?>
+            <!-- «Выключенная» ссылка на предыдущую страницу -->
+            <li class="disabled"><a>»</a></li>
+        <?php endif; ?>
+    </ul>
+</div>
+<?php endif; ?>

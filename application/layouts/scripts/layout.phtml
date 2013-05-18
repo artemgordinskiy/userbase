@@ -1,0 +1,60 @@
+<?php
+$this->headTitle()->setSeparator(' | ');
+$this->headTitle('Cybertone test');
+$homeLink = $this->url(array('controller'=>'index', 'action'=>'index'));
+$customersIndexLink = $this->url(array('controller'=>'customers', 'action'=>'index'));
+$customersAddLink = $this->url(array('controller'=>'customers', 'action'=>'add'));
+$groupsIndexLink = $this->url(array('controller'=>'groups', 'action'=>'index'));
+$groupsAddLink = $this->url(array('controller'=>'groups', 'action'=>'add'));
+
+echo $this->doctype() . "\n";
+
+?>
+<html>
+    <head>
+        <?php
+        echo $this->headMeta() . "\n";
+        echo $this->headTitle() . "\n";
+        echo $this->headLink()->prependStylesheet($this->baseUrl() . '/css/style.css') . "\n";
+        echo $this->headLink()->prependStylesheet($this->baseUrl() . '/css/font-awesome.css') . "\n";
+        echo $this->headLink()->prependStylesheet($this->baseUrl() . '/css/bootstrap.css') . "\n";
+        echo $this->headLink()->prependStylesheet('http://fonts.googleapis.com/css?family=Source+Code+Pro&subset=latin-ext') . "\n";
+        echo $this->headScript()->prependFile('http://code.jquery.com/jquery-2.0.0.min.js');
+        echo $this->headScript()->prependFile($this->baseUrl() . '/js/bootstrap.min.js');
+        ?>
+    </head>
+    <body>
+
+        <div id="content">
+            <div class="navbar navbar-static-top" style="margin: -1px -1px 0; padding-bottom: 25px;">
+                <div class="navbar-inner">
+                    <div class="container" style="width: auto; padding: 0 20px;">
+                        <a class="brand" href="/">UserBase</a>
+                        <ul class="nav">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Пользователи <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<?php echo $this->url(array('controller'=>'customers', 'action'=>'index')); ?>">Посмотреть</a></li>
+                                    <li><a href="<?php echo $this->url(array('controller'=>'customers', 'action'=>'add')); ?>">Добавить</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav">
+                            <li class="dropdown">
+                                <a href="#" data-toggle="dropdown">Группы <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'index')); ?>" class="dropdown-toggle">Посмотреть</a></li>
+                                    <li><a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'add')); ?>">Добавить</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <h1><?php echo $this->escape($this->title); ?></h1>
+            <br />
+            <br />
+            <?php echo $this->layout()->content . "\n"; ?>
+        </div>
+    </body>
+</html>

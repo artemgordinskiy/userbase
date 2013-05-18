@@ -1,0 +1,13 @@
+<?php
+$this->title = 'Удалить пользователя';
+$this->headTitle($this->title);
+?>
+
+<p style="text-align:center;">Вы уверены, что хотите удалить пользователя с логином "<strong><?php echo $this->escape($this->customer['login']); ?></strong>"?</p>
+<form action="<?php echo $this->url(array('action'=>'delete')); ?>" style="text-align:center;" method="POST">
+    <div>
+          <input type="hidden" name="id" value="<?php echo $this->customer['id']; ?>" />
+          <input type="submit" name="del" value="Да" />
+          <input type="submit" name="del" value="Нет" />
+    </div>
+</form>

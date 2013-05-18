@@ -1,0 +1,13 @@
+<?php
+$this->title = 'Удалить группу';
+$this->headTitle($this->title);
+?>
+
+<p style="text-align:center;">Вы уверены, что хотите удалить группу "<strong><?php echo $this->escape($this->group['name']); ?></strong>"?</p>
+<form action="<?php echo $this->url(array('action'=>'delete')); ?>" style="text-align: center;" method="POST">
+    <div>
+          <input type="hidden" name="id" value="<?php echo $this->group['id']; ?>" />
+          <input type="submit" name="del" value="Да" />
+          <input type="submit" name="del" value="Нет" />
+    </div>
+</form>
