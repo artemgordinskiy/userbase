@@ -16,7 +16,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
     public function fetchAllCustomers($page = 1, $orderBy = 'id', $orderDirection = 'ASC', $resultCount = 10, $filterById = false, $filterByDate = false) {
         $query = $this->select();
         $query->setIntegrityCheck(false)
-              ->from('customers', array('customers.group_id', 'customers.id', 'login', 'password', 'email', 'acc_exp_date'));
+              ->from('customers', array('customers.group_id', 'customers.id', 'login', 'password', 'email', 'userpic_ext', 'acc_exp_date'));
 
         if($filterById !== false) {
             $query->where('customers.group_id = ' . $filterById);
@@ -63,18 +63,19 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @param  [STR]   $email        Электропочта, до 64 символов;
      * @return [BOOL]                True, если запрос прошел удачно, иначе создает Exception;
      */
-    public function addCustomer($group_id, $acc_exp_date, $pass, $login, $email) {
+    public function addCustomer($group_id, $acc_exp_date, $pass, $login, $email, $userpicExt) {
         $data = array(
             'group_id' => $group_id,
             'acc_exp_date' => $acc_exp_date,
             'password' => $pass,
             'login' => $login,
-            'email' => $email
+            'email' => $email,
+            'userpic_ext' => $userpicExt
         );
         // Insert возвращает Primary Key новой записи, если запрос прошел удачно;
         $result = (int)$this->insert($data);
         if(is_int($result)) {
-            return true;
+            return $result;
         } else {
             throw new Exception('Не получилось добавить клиента.');
         }
@@ -90,13 +91,14 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @param [STR] $email        Электропочта, до 64 символов;
      * @return[BOOL]              True, при успехе; Иначе — Exception
      */
-    public function editCustomer($id, $group_id, $acc_exp_date, $pass, $login, $email) {
+    public function editCustomer($id, $group_id, $acc_exp_date, $pass, $login, $email, $userpicExt) {
         $data = array(
             'group_id' => $group_id,
             'acc_exp_date' => $acc_exp_date,
             'password' => $pass,
             'login' => $login,
-            'email' => $email
+            'email' => $email,
+            'userpic_ext' => $userpicExt
         );
         // функция update() возвращает количество затронутых рядов, сохраним его для проверки.
         $rowsAffected = (int)$this->update($data, 'id=' . $id);

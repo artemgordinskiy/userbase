@@ -54,10 +54,19 @@ class Application_Form_Customer extends Zend_Form
               ->addValidator('EmailAddress')
               ->addValidator('StringLength', false, array(5, 64));
 
+        $image = new Zend_Form_Element_File('userpic');
+        $image->setLabel('Аватар:')
+              ->setRequired(false)
+              ->addValidator('Count', array(1))
+              ->addValidator('IsImage', false)
+              ->addValidator('Size', false, array(1048576 * 5))
+              ->addValidator('Extension', false, array('jpg,png,gif,jpeg'));
+
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Отправить')
                ->setAttribs(array('class'=>'btn'));
-        $this->addElements(array($id, $group_id, $acc_exp_date, $pass, $login, $email, $submit));
+
+        $this->addElements(array($id, $group_id, $acc_exp_date, $login, $pass, $email, $image, $submit));
 
 
     }
