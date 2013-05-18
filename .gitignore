@@ -8,3 +8,4 @@ library/Zend
 .DS_Store
 
 data/session
+*.jpg
