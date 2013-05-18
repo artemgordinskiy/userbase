@@ -6,3 +6,5 @@ extras/documentation
 library/Zend
 
 .DS_Store
+
+data/session
