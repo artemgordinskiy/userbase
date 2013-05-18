@@ -30,7 +30,7 @@ class CustomersController extends Zend_Controller_Action
 
     public function addAction()
     {
-        $form = new Application_Form_customer();
+        $form = new Application_Form_Customer();
         $form->submit->setLabel('Сохранить');
         $this->view->form = $form;
 
@@ -56,7 +56,7 @@ class CustomersController extends Zend_Controller_Action
 
     public function editAction()
     {
-        $form = new Application_Form_customer();
+        $form = new Application_Form_Customer();
         $form->submit->setLabel('Сохранить');
         $this->view->form = $form;
 
