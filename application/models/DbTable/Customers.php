@@ -100,6 +100,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
             'email' => $email,
             'userpic_ext' => $userpicExt
         );
+
         // функция update() возвращает количество затронутых рядов, сохраним его для проверки.
         $rowsAffected = (int)$this->update($data, 'id=' . $id);
         if($rowsAffected = 1) {
@@ -115,9 +116,11 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return [BOOL]         True, при успехе; Иначе — Exception
      */
     public function deleteCustomer($id) {
-        // функция delete() возвращает количество затронутых рядов, сохраним его для проверки.
+        // метод delete() возвращает количество затронутых рядов, сохраним его для проверки.
         $rowsAffected = (int)$this->delete('id=' . $id);
         if($rowsAffected = 1) {
+            // Удаляем юзерпик
+            array_map('unlink', glob(PUBLIC_PATH . '/images/uploads/' . $id . '.*'));
             return true;
         } else {
             throw new Exception('Не получилось удалить клиента №' . $id . '. Вероятнее всего, его не существует.');

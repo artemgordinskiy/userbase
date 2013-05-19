@@ -40,8 +40,13 @@ class CustomersController extends Zend_Controller_Action
             // Если форма прошла проверки...
             if ($form->isValid($formData)) {
                 $upload = new Zend_File_Transfer_Adapter_Http();
-                $userpicName = $upload -> getFileName('userpic');
-                $userpicExt = pathinfo($userpicName, PATHINFO_EXTENSION);
+                $userpicExt = null;
+
+                if($upload->isUploaded()) {
+                    $userpicName = $upload -> getFileName('userpic');
+                    $userpicExt = pathinfo($userpicName, PATHINFO_EXTENSION);
+                }
+
                 $group_id = (int)$form->getValue('group_id');
                 $acc_exp_date = $form->getValue('acc_exp_date');
                 $pass = $form->getValue('password');
@@ -49,8 +54,12 @@ class CustomersController extends Zend_Controller_Action
                 $email = $form->getValue('email');
                 $customers = new Application_Model_DbTable_Customers();
                 $newID = $customers->addCustomer($group_id, $acc_exp_date, $pass, $login, $email, $userpicExt);
-                $upload->addFilter('Rename', array('target' => PUBLIC_PATH . '/images/uploads/' . $newID . '.' . $userpicExt, 'overwrite' => true));
-                $upload->receive();
+
+                if($upload->isUploaded()) {
+                    $upload->addFilter('Rename', array('target' => PUBLIC_PATH . '/images/uploads/' . $newID . '.' . $userpicExt, 'overwrite' => true));
+                    $upload->receive();
+                }
+
                 $this->_helper->redirector('index');
             } else {
                 $form->populate($formData);
@@ -67,12 +76,19 @@ class CustomersController extends Zend_Controller_Action
         if($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();
             if ($form->isValid($formData)) {
+                $userpicExt = null;
                 $id = (int)$form->getValue('id');
                 $upload = new Zend_File_Transfer_Adapter_Http();
-                $userpicName = $upload -> getFileName('userpic');
-                $userpicExt = pathinfo($userpicName, PATHINFO_EXTENSION);
-                $upload->addFilter('Rename', array('target' => PUBLIC_PATH . '/images/uploads/' . $id . '.' . $userpicExt, 'overwrite' => true));
-                $upload->receive();
+
+                if($upload->isUploaded()) {
+                    // Удаляем предыдущий юзерпик
+                    array_map('unlink', glob(PUBLIC_PATH . '/images/uploads/' . $id . '.*'));
+                    $userpicName = $upload -> getFileName('userpic');
+                    $userpicExt = pathinfo($userpicName, PATHINFO_EXTENSION);
+                    $upload->addFilter('Rename', array('target' => PUBLIC_PATH . '/images/uploads/' . $id . '.' . $userpicExt, 'overwrite' => true));
+                    $upload->receive();
+                }
+
                 $group_id = (int)$form->getValue('group_id');
                 $acc_exp_date = $form->getValue('acc_exp_date');
                 $pass = $form->getValue('password');
