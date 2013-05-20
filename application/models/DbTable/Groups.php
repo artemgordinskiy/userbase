@@ -15,7 +15,12 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
      */
     public function fetchAllGroups($page = 1, $orderBy = 'id', $orderDirection = 'ASC', $resultCount = 10) {
         $query = $this->select();
-        $query->order($orderBy . ' ' . $orderDirection);
+        $query->setIntegrityCheck(false)
+              ->from('groups', array('groups.id', 'groups.name', 'COUNT(customers.id) as memberCount'))
+              ->joinLeft('customers', 'groups.id = customers.group_id', null)
+              ->group('groups.name')
+              // Пока не разобрался как здесь правильно делать prepare и bind...
+              ->order($orderBy . ' ' . $orderDirection);
 
         $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($query));
         $paginator->setItemCountPerPage((int)$resultCount);
