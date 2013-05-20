@@ -24,7 +24,7 @@ class CustomersController extends Zend_Controller_Action
 
         // Пришлось еще раз дергать ДБ, чтобы получить полный список групп для фильтра.
         $groups = new Application_Model_DbTable_Groups();
-        $groupsResultSet = $groups->fetchAll(null, 'name ASC');
+        $groupsResultSet = $groups->getAllGroupsWithMembers();
         $this->view->groups = $groupsResultSet;
     }
 

@@ -27,8 +27,8 @@ $this->headTitle($this->title);
     <ul class="dropdown-menu">
         <?php foreach($this->groups as $group): ?>
         <li>
-            <a href="<?php echo $this->url(array('filterByID'=>$group->id)); ?>">
-                <?php echo $this->escape($group->name); ?>
+            <a href="<?php echo $this->url(array('filterByID'=>$group['id'])); ?>">
+                <?php echo $this->escape($group['name']); ?>
             </a>
         </li>
         <?php endforeach; ?>

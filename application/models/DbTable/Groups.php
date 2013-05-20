@@ -97,4 +97,19 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
             throw new Exception('Не получилось удалить группу №' . $id . '. Вероятнее всего, ее не существует.');
         }
     }
+
+    public function getAllGroupsWithMembers() {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from('groups', array('groups.id', 'groups.name'))
+              ->joinRight('customers', 'groups.id = customers.group_id', null)
+              ->group('groups.name')
+              ->order('name ASC');
+
+        if(is_array($query) || is_object($query)) {
+            return $this->_fetch($query);
+        } else {
+            throw new Exception('Ошибка при работе с DB, в функции getAllGroupsWithMembers()');
+        }
+    }
 }
