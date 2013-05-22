@@ -100,7 +100,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         );
 
         if(strlen($pass) > 0) {
-            $generatedSalt = $this->generatePassSalt(10);
+            $generatedSalt = $this->generatePassSalt(50);
             $data['password'] = md5(USER_STATIC_PASS_SALT . $pass . $generatedSalt);
             $data['pass_salt'] = $generatedSalt;
         }
