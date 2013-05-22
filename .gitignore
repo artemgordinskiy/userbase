@@ -10,3 +10,5 @@ library/Zend
 data/session
 *.jpg
 *.png
+
+application/Bootstrap.php
