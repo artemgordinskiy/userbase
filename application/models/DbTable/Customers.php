@@ -101,7 +101,9 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         );
 
         if(strlen($pass) > 0) {
-            $data['password'] = $pass;
+            $generatedSalt = $this->generatePassSalt(10);
+            $data['password'] = md5(USER_STATIC_PASS_SALT . $pass . $generatedSalt);
+            $data['pass_salt'] = $generatedSalt;
         }
 
         // функция update() возвращает количество затронутых рядов, сохраним его для проверки.
@@ -128,6 +130,15 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         } else {
             throw new Exception('Не получилось удалить клиента №' . $id . '. Вероятнее всего, его не существует.');
         }
+    }
+
+    public function generatePassSalt($length) {
+        $characters = '!@#$%^&*()_+0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $randomString;
     }
 
 }
