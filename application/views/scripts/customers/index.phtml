@@ -44,7 +44,6 @@ $this->headTitle($this->title);
         <tr class='tableData'>
             <th><a title='Сортировать по ID' href='<?php echo $this->url(array('sort'=>'id')) ?>'>ID</a></th>
             <th><a title='Сортировать по логину' href='<?php echo $this->url(array('sort'=>'login')) ?>'>Логин</th>
-            <th><a title='Сортировать по паролю' href='<?php echo $this->url(array('sort'=>'password')) ?>'>Пароль</th>
             <th><a title='Сортировать по e-mail' href='<?php echo $this->url(array('sort'=>'email')) ?>'>E-mail</th>
             <th><a title='Сортировать по группе' href='<?php echo $this->url(array('sort'=>'group_name')) ?>'>Группа</th>
             <th><a title='Сортировать по расширению аватара' href='<?php echo $this->url(array('sort'=>'userpic_ext')) ?>'>Расш. аватара</th>
@@ -56,7 +55,6 @@ $this->headTitle($this->title);
         <tr>
             <td><?php echo $this->escape($customer->id);?></td>
             <td><?php echo $this->escape($customer->login);?></td>
-            <td><?php echo $this->escape($customer->password);?></td>
             <td><?php echo $this->escape($customer->email);?></td>
             <td><?php echo $this->escape($customer->group_name);?></td>
             <td><?php echo $this->escape($customer->userpic_ext);?></td>

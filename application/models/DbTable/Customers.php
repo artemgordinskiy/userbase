@@ -16,7 +16,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
     public function fetchAllCustomers($page = 1, $orderBy = 'id', $orderDirection = 'ASC', $resultCount = 10, $filterById = false, $filterByDate = false) {
         $query = $this->select();
         $query->setIntegrityCheck(false)
-              ->from('customers', array('customers.group_id', 'customers.id', 'login', 'password', 'email', 'userpic_ext', 'acc_exp_date'));
+              ->from('customers', array('customers.group_id', 'customers.id', 'login', 'email', 'userpic_ext', 'acc_exp_date'));
 
         if($filterById !== false) {
             $query->where('customers.group_id = ' . $filterById);
