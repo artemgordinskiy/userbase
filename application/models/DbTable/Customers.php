@@ -97,13 +97,16 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
             'acc_exp_date' => $acc_exp_date,
             'login' => $login,
             'email' => $email,
-            'userpic_ext' => $userpicExt
         );
 
         if(strlen($pass) > 0) {
             $generatedSalt = $this->generatePassSalt(10);
             $data['password'] = md5(USER_STATIC_PASS_SALT . $pass . $generatedSalt);
             $data['pass_salt'] = $generatedSalt;
+        }
+
+        if(strlen($userpicExt) > 0) {
+            $data['userpic_ext'] = $userpic_ext;
         }
 
         // функция update() возвращает количество затронутых рядов, сохраним его для проверки.
