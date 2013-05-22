@@ -31,7 +31,7 @@ class Application_Form_Customer extends Zend_Form
 
         $pass = new Zend_Form_Element_Password('password');
         $pass->setLabel('Пароль:')
-             ->setRequired(true)
+             ->setRequired(false)
              ->addFilter('StripTags')
              ->addFilter('StringTrim')
              ->addValidator('NotEmpty')

@@ -95,11 +95,14 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         $data = array(
             'group_id' => $group_id,
             'acc_exp_date' => $acc_exp_date,
-            'password' => $pass,
             'login' => $login,
             'email' => $email,
             'userpic_ext' => $userpicExt
         );
+
+        if(strlen($pass) > 0) {
+            $data['password'] = $pass;
+        }
 
         // функция update() возвращает количество затронутых рядов, сохраним его для проверки.
         $rowsAffected = (int)$this->update($data, 'id=' . $id);
