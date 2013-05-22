@@ -17,11 +17,13 @@ class AuthController extends Zend_Controller_Action
 
         if($this->getRequest()->isPost()) {
             if ($loginForm->isValid($_POST)) {
+                $staticSalt = ADMIN_STATIC_PASS_SALT;
                 $adapter = new Zend_Auth_Adapter_DbTable(
                     $db,
                     'admins',
                     'username',
-                    'password'
+                    'password',
+                    "MD5(CONCAT('" . $staticSalt . "', ?, pass_salt))"
                     );
 
                 $adapter->setIdentity($loginForm->getValue('username'));
