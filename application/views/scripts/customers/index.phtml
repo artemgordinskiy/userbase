@@ -48,7 +48,6 @@ $this->headTitle($this->title);
             <th><a title='Сортировать по группе' href='<?php echo $this->url(array('sort'=>'group_name')) ?>'>Группа</th>
             <th><a title='Сортировать по расширению аватара' href='<?php echo $this->url(array('sort'=>'userpic_ext')) ?>'>Расш. аватара</th>
             <th><a title='Сортировать по дате просрочки аккаунта' href='<?php echo $this->url(array( 'sort'=>'acc_exp_date')) ?>'>Активен до</th>
-            <!-- <th>Аватар</th> -->
             <th>&nbsp;</th>
         </tr>
         <?php foreach($this->customers as $customer) : ?>
