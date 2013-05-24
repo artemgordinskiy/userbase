@@ -135,6 +135,12 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         }
     }
 
+    /**
+     * Генерирует строку из случайных символов, чтобы использовать
+     * в качестве «соли» при хешировании.
+     * @param  integer   $length    Необходимая длина
+     * @return string               Строка указанной длины
+     */
     public function generatePassSalt($length) {
         $characters = '!@#$%^&*()_+0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $randomString = '';
