@@ -5,6 +5,10 @@ class Application_Form_Customer extends Zend_Form
 
     public function init()
     {
+        // «По-кошерному» включить файл со своим валидатором не получилось, поэтому пока так
+        require APPLICATION_PATH . '/forms/validators/Expiration_Time.php';
+        $exp_time_validator = new Validator_Expiration_Time();
+
         $this->setName('customer')
              ->setAttribs(array('class'=>'form-horizontal'));
 
@@ -22,12 +26,13 @@ class Application_Form_Customer extends Zend_Form
 
         $acc_exp_date = new Zend_Form_Element_Text('acc_exp_date');
         $acc_exp_date->setLabel('Действует до:')
-                     ->setValue('9999-12-31 23:59:59')
+                     ->setValue('2013-12-31 23:59:59')
                      ->setRequired(true)
                      ->addFilter('StripTags')
                      ->addFilter('StringTrim')
                      ->addValidator('NotEmpty')
-                     ->addValidator('StringLength', false, array(19, 19));
+                     ->addValidator('StringLength', false, array(19, 19))
+                     ->addValidator($exp_time_validator);
 
         $pass = new Zend_Form_Element_Password('password');
         $pass->setLabel('Пароль:')
