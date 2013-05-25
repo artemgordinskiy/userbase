@@ -112,4 +112,18 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
             throw new Exception('Ошибка при работе с DB, в функции getAllGroupsWithMembers()');
         }
     }
+
+    public function getMemberCount($groupID) {
+        $query = $this->select();
+        $query->setIntegrityCheck(false)
+              ->from('groups', array('COUNT(customers.id) as memberCount'))
+              ->joinLeft('customers', 'groups.id = customers.group_id', null)
+              ->where('groups.id = ' . $groupID);
+
+        if(is_array($query) || is_object($query)) {
+            return $this->_fetch($query);
+        } else {
+            throw new Exception('Ошибка при работе с DB, в функции getMemberCount()');
+        }
+    }
 }
