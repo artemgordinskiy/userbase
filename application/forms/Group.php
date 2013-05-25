@@ -15,7 +15,12 @@ class Application_Form_Group extends Zend_Form
              ->setRequired(true)
              ->addFilter('StripTags')
              ->addFilter('StringTrim')
-             ->addValidator('NotEmpty');
+             ->addValidator('NotEmpty')
+             ->addValidator('Db_NoRecordExists', true,
+                    array('table' => 'groups', 'field' => 'name',
+                        'messages' => array('recordFound' => 'Указанное название группы уже используется.')
+                    )
+               );
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setAttrib('class', 'btn');
 
