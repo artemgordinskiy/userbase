@@ -48,7 +48,12 @@ class Application_Form_Customer extends Zend_Form
               ->addFilter('StripTags')
               ->addFilter('StringTrim')
               ->addValidator('NotEmpty')
-              ->addValidator('StringLength', false, array(3, 64));
+              ->addValidator('StringLength', false, array(3, 64))
+              ->addValidator('Db_NoRecordExists', true,
+                    array('table' => 'customers', 'field' => 'login',
+                        'messages' => array('recordFound' => 'Указанный логин уже используется.')
+                    )
+                );
 
         $email = new Zend_Form_Element_Text('email');
         $email->setLabel('Почта:')
