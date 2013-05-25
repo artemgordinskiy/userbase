@@ -43,7 +43,8 @@ class GroupsController extends Zend_Controller_Action
 
     public function editAction()
     {
-        $form = new Application_Form_Group();
+        $id = (int)$this->_getParam('id', 0);
+        $form = new Application_Form_Group(array('groupID' => $id));
         $form->submit->setLabel('Сохранить');
         $this->view->form = $form;
 
@@ -61,7 +62,6 @@ class GroupsController extends Zend_Controller_Action
 
             }
         } else {
-            $id = (int)$this->_getParam('id', 0);
             if($id > 0) {
                 $groups = new Application_Model_DbTable_Groups();
                 $form->populate($groups->getGroup($id));

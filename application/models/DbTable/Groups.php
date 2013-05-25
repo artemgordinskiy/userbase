@@ -76,7 +76,7 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
         // функция update() возвращает количество затронутых рядов. Сохраняем его для проверки.
         $result = $this->update($data, 'id=' . (int)$id);
         $result = (int)$result;
-        if($result === 1) {
+        if($result >= 0) {
             return true;
         } else {
             throw new Exception('Не получилось изменить информацию группы №' . $id . '. Вероятнее всего, ее не существует.');

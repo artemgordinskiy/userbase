@@ -111,7 +111,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
 
         // функция update() возвращает количество затронутых рядов, сохраним его для проверки.
         $rowsAffected = (int)$this->update($data, 'id=' . $id);
-        if($rowsAffected = 1) {
+        if($rowsAffected >= 0) {
             return true;
         } else {
             throw new Exception('Не получилось изменить информацию клиента №' . $id . '. Вероятнее всего, его не существует.');

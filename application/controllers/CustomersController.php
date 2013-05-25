@@ -69,7 +69,9 @@ class CustomersController extends Zend_Controller_Action
 
     public function editAction()
     {
-        $form = new Application_Form_Customer();
+        $id = (int)$this->_getParam('id', 0);
+        $form = new Application_Form_Customer(array('customerID' => $id));
+
         $form->submit->setLabel('Сохранить');
         $this->view->form = $form;
 
@@ -104,7 +106,6 @@ class CustomersController extends Zend_Controller_Action
 
             }
         } else {
-            $id = (int)$this->_getParam('id', 0);
             if($id > 0) {
                 $customers = new Application_Model_DbTable_Customers();
                 $form->populate($customers->getCustomer($id));

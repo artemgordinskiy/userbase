@@ -5,6 +5,8 @@ class Application_Form_Customer extends Zend_Form
 
     public function init()
     {
+        $customerID = $this->getAttrib('customerID');
+
         // «По-кошерному» включить файл со своим валидатором не получилось, поэтому пока так
         require APPLICATION_PATH . '/forms/validators/Expiration_Time.php';
         $exp_time_validator = new Validator_Expiration_Time();
@@ -54,7 +56,11 @@ class Application_Form_Customer extends Zend_Form
               ->addValidator('StringLength', false, array(3, 64))
               ->addValidator('Db_NoRecordExists', true,
                     array('table' => 'customers', 'field' => 'login',
-                        'messages' => array('recordFound' => 'Указанный логин уже используется.')
+                        'messages' => array('recordFound' => 'Указанный логин уже используется.'),
+                        'exclude' => array(
+                            'field' => 'id',
+                            'value' => $customerID
+                        )
                     )
                 );
 
@@ -68,7 +74,11 @@ class Application_Form_Customer extends Zend_Form
               ->addValidator('StringLength', false, array(5, 64))
               ->addValidator('Db_NoRecordExists', true,
                     array('table' => 'customers', 'field' => 'email',
-                        'messages' => array('recordFound' => 'Указанный email уже используется.')
+                        'messages' => array('recordFound' => 'Указанный email уже используется.'),
+                        'exclude' => array(
+                            'field' => 'id',
+                            'value' => $customerID
+                        )
                     )
                 );
 
@@ -85,7 +95,6 @@ class Application_Form_Customer extends Zend_Form
                ->setAttribs(array('class'=>'btn'));
 
         $this->addElements(array($id, $group_id, $acc_exp_date, $login, $pass, $email, $image, $submit));
-
 
     }
 
