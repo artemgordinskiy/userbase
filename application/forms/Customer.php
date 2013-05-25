@@ -9,6 +9,9 @@ class Application_Form_Customer extends Zend_Form
         require APPLICATION_PATH . '/forms/validators/Expiration_Time.php';
         $exp_time_validator = new Validator_Expiration_Time();
 
+        // По умолчанию, срок действия аккаунта равен 3 месяцам с момента регистрации.
+        $dateInThreeMonths = date("Y-m-d H:i:s", strtotime('+3 months', strtotime(date("Y-m-d H:i:s"))));
+
         $this->setName('customer')
              ->setAttribs(array('class'=>'form-horizontal'));
 
@@ -26,7 +29,7 @@ class Application_Form_Customer extends Zend_Form
 
         $acc_exp_date = new Zend_Form_Element_Text('acc_exp_date');
         $acc_exp_date->setLabel('Действует до:')
-                     ->setValue('2013-12-31 23:59:59')
+                     ->setValue($dateInThreeMonths)
                      ->setRequired(true)
                      ->addFilter('StripTags')
                      ->addFilter('StringTrim')
