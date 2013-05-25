@@ -12,3 +12,4 @@ data/session
 *.png
 
 application/Bootstrap.php
+application/configs/(template)application.ini
