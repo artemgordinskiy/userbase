@@ -65,7 +65,12 @@ class Application_Form_Customer extends Zend_Form
               ->addFilter('StringTrim')
               ->addValidator('NotEmpty')
               ->addValidator('EmailAddress')
-              ->addValidator('StringLength', false, array(5, 64));
+              ->addValidator('StringLength', false, array(5, 64))
+              ->addValidator('Db_NoRecordExists', true,
+                    array('table' => 'customers', 'field' => 'email',
+                        'messages' => array('recordFound' => 'Указанный email уже используется.')
+                    )
+                );
 
         $image = new Zend_Form_Element_File('userpic');
         $image->setLabel('Аватар:')
