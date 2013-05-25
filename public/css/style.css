@@ -194,6 +194,10 @@ div.groups-dropdown-filter, div.expiration-filter-dropdown {
     vertical-align: text-top;
 }
 
+.errors {
+    list-style-type: none;
+}
+
 /* ==========================================================================
    Helper classes
    ========================================================================== */
