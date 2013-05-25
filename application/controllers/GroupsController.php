@@ -71,6 +71,7 @@ class GroupsController extends Zend_Controller_Action
 
     public function deleteAction()
     {
+        $this->view->notEmpty = null;
         if ($this->getRequest()->isPost()) {
             $del = $this->getRequest()->getPost('del');
             if($del === 'Да') {
@@ -83,6 +84,12 @@ class GroupsController extends Zend_Controller_Action
             $id = $this->_getParam('id', 0);
             $groups = new Application_Model_DbTable_Groups();
             $this->view->group = $groups->getGroup($id);
+            $memberCount = $groups->getMemberCount($id);
+            $memberCount = (int)$memberCount[0]['memberCount'];
+            if($memberCount > 0) {
+                $this->view->memberCount = $memberCount;
+                $this->view->notEmpty = true;
+            }
         }
     }
 

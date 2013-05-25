@@ -1,9 +1,15 @@
 <?php
 $this->title = 'Удалить группу';
 $this->headTitle($this->title);
+
 ?>
 
 <p style="text-align:center;">Вы уверены, что хотите удалить группу "<strong><?php echo $this->escape($this->group['name']); ?></strong>"?</p>
+<?php if ($this->notEmpty === true) : ?>
+<!-- Можно было, конечно, добавить функцию для правильного склонения существительного «клиент», но это уже в другой раз -->
+<p style="text-align:center;">Внимание! В этой группе находятся <strong><?php echo $this->escape($this->memberCount); ?></strong> клиент (-а, -ов). Они также будут удалены из базы.</p>
+
+<?php endif; ?>
 <form action="<?php echo $this->url(array('action'=>'delete')); ?>" style="text-align: center;" method="POST">
     <div>
           <input type="hidden" name="id" value="<?php echo $this->group['id']; ?>" />
