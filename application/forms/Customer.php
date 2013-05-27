@@ -5,7 +5,7 @@ class Application_Form_Customer extends Zend_Form
 
     public function init()
     {
-        $customerID = $this->getAttrib('customerID');
+        $customerID = $this->getAttrib('customerID') !== null ? $this->getAttrib('customerID') : 0;
 
         // «По-кошерному» включить файл со своим валидатором не получилось, поэтому пока так
         require APPLICATION_PATH . '/forms/validators/Expiration_Time.php';
@@ -53,16 +53,9 @@ class Application_Form_Customer extends Zend_Form
               ->addFilter('StripTags')
               ->addFilter('StringTrim')
               ->addValidator('NotEmpty')
-              ->addValidator('StringLength', false, array(3, 64))
-              ->addValidator('Db_NoRecordExists', true,
-                    array('table' => 'customers', 'field' => 'login',
-                        'messages' => array('recordFound' => 'Указанный логин уже используется.'),
-                        'exclude' => array(
-                            'field' => 'id',
-                            'value' => $customerID
-                        )
-                    )
-                );
+              ->addValidator('StringLength', false, array(3, 64));
+
+
 
         $email = new Zend_Form_Element_Text('email');
         $email->setLabel('Почта:')

@@ -48,6 +48,7 @@ class CustomersController extends Zend_Controller_Action
                 }
 
                 $group_id = (int)$form->getValue('group_id');
+                $group_id = $group_id !== 0 ? $group_id : null;
                 $acc_exp_date = $form->getValue('acc_exp_date');
                 $pass = $form->getValue('password');
                 $login = $form->getValue('login');
@@ -92,6 +93,7 @@ class CustomersController extends Zend_Controller_Action
                 }
 
                 $group_id = (int)$form->getValue('group_id');
+                $group_id = $group_id !== 0 ? $group_id : null;
                 $acc_exp_date = $form->getValue('acc_exp_date');
                 $pass = $form->getValue('password');
                 $login = $form->getValue('login');
