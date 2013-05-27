@@ -17,9 +17,9 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         $query = $this->select();
         $query->setIntegrityCheck(false)
               ->from('customers', array('customers.group_id', 'customers.id', 'login', 'email', 'userpic_ext', 'acc_exp_date'));
-
+        $order = $orderBy . ' ' . $orderDirection;
         if($filterById !== false) {
-            $query->where('customers.group_id = ' . $filterById);
+            $query->where('customers.group_id = ?', $filterById);
         }
 
         if($filterByDate !== false) {
@@ -30,8 +30,9 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
             }
         }
 
-        $query->join('groups', 'customers.group_id = groups.id', 'name as group_name')
-              ->order($orderBy . ' ' . $orderDirection);
+        $query->joinLeft('groups', 'customers.group_id = groups.id', 'name as group_name')
+              // В order значения проходят через функцию quoteIdentifier(), так что, наверное с безопасностью ОК.
+              ->order($order);
         $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($query));
         $paginator->setItemCountPerPage((int)$resultCount);
         $paginator->setCurrentPageNumber((int)$page);
@@ -44,11 +45,13 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return [ARR]           Массив данных пользователя, в случае успешного запроса. Иначе — Exception;
      */
     public function getCustomer($id) {
-        $id = (int)$id;
-        $row = $this->fetchRow('id=' . $id);
+        $select = $this->select();
+        $select->where('id = ?', (int)$id);
+        $row = $this->_fetch($select);
+        $row = $row[0];
         // Если запрос прошел удачно, в $row будет либо массив, либо объект
         if(is_array($row) || is_object($row)) {
-            return $row->toArray();
+            return $row;
         } else {
             throw new Exception('Клиента номер ' . $id . ' не существует.');
         }
@@ -63,17 +66,29 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @param  [STR]   $email        Электропочта, до 64 символов;
      * @return [BOOL]                True, если запрос прошел удачно, иначе создает Exception;
      */
-    public function addCustomer($group_id, $acc_exp_date, $pass, $login, $email, $userpicExt) {
+    public function addCustomer($group_id = null, $acc_exp_date = null, $pass = null, $login, $email, $userpicExt = null) {
         $data = array(
             'group_id' => $group_id,
             'acc_exp_date' => $acc_exp_date,
-            'password' => $pass,
             'login' => $login,
-            'email' => $email,
-            'userpic_ext' => $userpicExt
+            'email' => $email
         );
-        // Insert возвращает Primary Key новой записи, если запрос прошел удачно;
-        $result = (int)$this->insert($data);
+
+        if(strlen($pass) > 0) {
+            $generatedSalt = $this->generatePassSalt(50);
+            $data['password'] = md5(USER_STATIC_PASS_SALT . $pass . $generatedSalt);
+            $data['pass_salt'] = $generatedSalt;
+        }
+
+        if(strlen($userpicExt) > 0) {
+            $data['userpic_ext'] = $userpicExt;
+        }
+
+        // insert() возвращает Primary Key новой записи, если запрос прошел удачно;
+        // «parameter binding» производится автоматически, по кажому столбцу.
+        $result = $this->insert($data);
+        $result = (int)$result;
+
         if(is_int($result)) {
             return $result;
         } else {
@@ -106,10 +121,11 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         }
 
         if(strlen($userpicExt) > 0) {
-            $data['userpic_ext'] = $userpic_ext;
+            $data['userpic_ext'] = $userpicExt;
         }
 
-        // функция update() возвращает количество затронутых рядов, сохраним его для проверки.
+        // update() возвращает количество затронутых рядов, сохраним его для проверки.
+        // «parameter binding» производится автоматически, по кажому столбцу.
         $rowsAffected = (int)$this->update($data, 'id=' . $id);
         if($rowsAffected >= 0) {
             return true;
@@ -125,8 +141,9 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      */
     public function deleteCustomer($id) {
         // метод delete() возвращает количество затронутых рядов, сохраним его для проверки.
-        $rowsAffected = (int)$this->delete('id=' . $id);
-        if($rowsAffected = 1) {
+        $id = (int)$id;
+        $rowsAffected = (int)$this->delete('id = ' . $id);
+        if($rowsAffected === 1) {
             // Удаляем юзерпик
             array_map('unlink', glob(PUBLIC_PATH . '/images/uploads/' . $id . '.*'));
             return true;
