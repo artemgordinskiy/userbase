@@ -44,9 +44,8 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
      * @return [ARR]        Массив данных группы, в случае успешного запроса. Иначе — Exception;
      */
     public function getGroup($id) {
-
         if(!$this->isRealID($id)) {
-            throw new Exception('Ошибка в Groups.php/getMemberCount(). Неверный/несуществующий ID группы: ' . print_r($id));
+            throw new Exception('Ошибка в Groups.php/getMemberCount(). Неверный/несуществующий ID группы: ' . $id);
         }
 
         $row = $this->fetchRow('id=' . $id);
