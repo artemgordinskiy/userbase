@@ -6,7 +6,10 @@ class Application_Form_Group extends Zend_Form
     public function init()
     {
         $this->setName('group');
+
         $groupID = $this->getAttrib('groupID');
+        $groupID = $groupID !== null ? $groupID : 0;
+
         $id = new Zend_Form_Element_Hidden('id');
         $id->addFilter('Int');
 

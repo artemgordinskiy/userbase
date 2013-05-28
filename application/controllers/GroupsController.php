@@ -52,6 +52,7 @@ class GroupsController extends Zend_Controller_Action
             $formData = $this->getRequest()->getPost();
             if ($form->isValid($formData)) {
                 $id = (int)$form->getValue('id');
+                $id = $id !== 0 ? $id : null;
                 $name = $form->getValue('name');
                 $groups = new Application_Model_DbTable_Groups();
                 $groups->editGroup($id, $name);
@@ -75,7 +76,7 @@ class GroupsController extends Zend_Controller_Action
         if ($this->getRequest()->isPost()) {
             $del = $this->getRequest()->getPost('del');
             if($del === 'Да') {
-                $id = $this->getRequest()->getPost('id');
+                $id = (int)$this->getRequest()->getPost('id');
                 $groups = new Application_Model_DbTable_Groups();
                 $groups->deleteGroup($id);
             }

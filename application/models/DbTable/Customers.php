@@ -16,12 +16,18 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
     public function fetchAllCustomers($page = 1, $orderBy = 'id', $orderDirection = 'ASC', $resultCount = 10, $filterById = false, $filterByDate = false) {
         $tableColumns = $this->info(Zend_Db_Table_Abstract::COLS);
         array_push($tableColumns, 'group_name');
+
+        $page = (int)$page;
+        $resultCount = (int)$resultCount;
+        $filterById = (int)$filterById;
+
         $query = $this->select();
         $query->setIntegrityCheck(false)
-              ->from('customers', array('customers.group_id', 'customers.id', 'login', 'email', 'userpic_ext', 'acc_exp_date'));
-        $order = $orderBy . ' ' . $orderDirection;
-        if($filterById !== false) {
-            $query->where('customers.group_id = ?', (int)$filterById);
+              ->from('customers', array('customers.group_id', 'customers.id', 'login', 'email', 'userpic_ext', 'acc_exp_date'))
+              ->joinLeft('groups', 'customers.group_id = groups.id', 'name as group_name');
+
+        if($filterById > 0) {
+            $query->where('customers.group_id = ?', $filterById);
         }
 
         if($filterByDate !== false) {
@@ -32,14 +38,12 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
             }
         }
 
-        $query->joinLeft('groups', 'customers.group_id = groups.id', 'name as group_name')
-              // В order значения проходят через функцию quoteIdentifier(), так что, наверное с безопасностью ОК.
-              ->order($order);
         if(in_array($orderBy, $tableColumns)) {
             $order = $orderBy . ' ';
             $order .= $orderDirection === 'ASC' ? 'ASC' : 'DESC';
             $query->order($order);
         };
+
         $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($query));
         $paginator->setItemCountPerPage((int)$resultCount);
         $paginator->setCurrentPageNumber((int)$page);
@@ -52,7 +56,13 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return [ARR]           Массив данных пользователя, в случае успешного запроса. Иначе — Exception;
      */
     public function getCustomer($id) {
+        $id = (int)$id;
         $select = $this->select();
+
+        if($id <= 0) {
+            throw new Exception('Указан несуществующий ID группы: ' . $id . '. Customers.php/getCustomer()');
+        }
+
         $select->where('id = ?', (int)$id);
         $row = $this->_fetch($select);
         $row = $row[0];
@@ -74,6 +84,8 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return [BOOL]                True, если запрос прошел удачно, иначе создает Exception;
      */
     public function addCustomer($group_id = null, $acc_exp_date = null, $pass = null, $login, $email, $userpicExt = null) {
+        $group_id = (int)$group_id;
+
         $data = array(
             'group_id' => $group_id,
             'acc_exp_date' => $acc_exp_date,
@@ -114,12 +126,18 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return[BOOL]              True, при успехе; Иначе — Exception
      */
     public function editCustomer($id, $group_id, $acc_exp_date, $pass, $login, $email, $userpicExt) {
+        $id = (int)$id;
+        $group_id = (int)$group_id;
+
         $data = array(
-            'group_id' => $group_id,
             'acc_exp_date' => $acc_exp_date,
             'login' => $login,
             'email' => $email,
         );
+
+        if($id > 0) {
+            $data['group_id'] = $group_id;
+        }
 
         if(strlen($pass) > 0) {
             $generatedSalt = $this->generatePassSalt(50);
@@ -149,6 +167,11 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
     public function deleteCustomer($id) {
         // (int) переваривает что угодно, даже буквы (в «0»). Так что, с безопасностью должно быть всё ок.
         $id = (int)$id;
+
+        if($id <= 0) {
+            throw new Exception('Указан несуществующий ID группы: ' . $id . '. Customers.php/getMemberCount()');
+        }
+
         // метод delete() возвращает количество затронутых рядов, сохраним его для проверки.
         $rowsAffected = (int)$this->delete('id = ' . $id);
         if($rowsAffected === 1) {
