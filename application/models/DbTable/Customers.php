@@ -14,6 +14,8 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return [ARR]                     Массив с результатами
      */
     public function fetchAllCustomers($page = 1, $orderBy = 'id', $orderDirection = 'ASC', $resultCount = 10, $filterById = false, $filterByDate = false) {
+        $tableColumns = $this->info(Zend_Db_Table_Abstract::COLS);
+        array_push($tableColumns, 'group_name');
         $query = $this->select();
         $query->setIntegrityCheck(false)
               ->from('customers', array('customers.group_id', 'customers.id', 'login', 'email', 'userpic_ext', 'acc_exp_date'));
@@ -33,6 +35,11 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         $query->joinLeft('groups', 'customers.group_id = groups.id', 'name as group_name')
               // В order значения проходят через функцию quoteIdentifier(), так что, наверное с безопасностью ОК.
               ->order($order);
+        if(in_array($orderBy, $tableColumns)) {
+            $order = $orderBy . ' ';
+            $order .= $orderDirection === 'ASC' ? 'ASC' : 'DESC';
+            $query->order($order);
+        };
         $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($query));
         $paginator->setItemCountPerPage((int)$resultCount);
         $paginator->setCurrentPageNumber((int)$page);
