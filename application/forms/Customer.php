@@ -5,7 +5,8 @@ class Application_Form_Customer extends Zend_Form
 
     public function init()
     {
-        $customerID = $this->getAttrib('customerID') !== null ? $this->getAttrib('customerID') : 0;
+        $customerID = $this->getAttrib('customerID');
+        $customerID = $customerID !== null ? $customerID : 0;
 
         // «По-кошерному» включить файл со своим валидатором не получилось, поэтому пока так
         require APPLICATION_PATH . '/forms/validators/Expiration_Time.php';
