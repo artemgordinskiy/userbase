@@ -221,4 +221,40 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
 
         return true;
     }
+
+    /**
+     * Выбирает правильное склонение существительного, в зависимости от числительного
+     * @param  [INT]    $inputNumber    Число, с которым используется существительное
+     * @param  [ARR]    $wordWorms      Формы существительного,
+     * в таком виде: array('клиент', 'клиента', 'клиентов')
+     *
+     * @return [STR]    Правильная форма существительного
+     */
+    public function getNumWord($inputNumber, $wordForms) {
+        $inputNumber = (int)$inputNumber;
+        $intRemainder = null;
+        $outputForm = null;
+
+        $intRemainder = $inputNumber % 100;
+        if ($intRemainder >= 11 && $intRemainder <= 19) {
+            $outputForm = $wordForms[2];
+        } else {
+            $i = $intRemainder % 10;
+            switch ($i) {
+            case (1):
+                $outputForm = $wordForms[0];
+                break;
+            case (2):
+            case (3):
+            case (4):
+                $outputForm = $wordForms[1];
+                break;
+            default:
+                $outputForm = $wordForms[2];
+            }
+        }
+
+        return $outputForm;
+
+    }
 }

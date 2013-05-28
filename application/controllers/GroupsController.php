@@ -95,8 +95,10 @@ class GroupsController extends Zend_Controller_Action
             $this->view->group = $groups->getGroup($id);
             $memberCount = $groups->getMemberCount($id);
             $memberCount = (int)$memberCount;
+            $nounForm = $groups->getNumWord($memberCount, array('клиент', 'клиента', 'клиентов'));
             if($memberCount > 0) {
                 $this->view->memberCount = $memberCount;
+                $this->view->nounForm = $nounForm;
                 $this->view->notEmpty = true;
             }
         }
