@@ -28,7 +28,12 @@ class Application_Form_Customer extends Zend_Form
                 ->addFilter('StripTags')
                 ->addFilter('StringTrim')
                 ->addValidator('NotEmpty')
-                ->addValidator('StringLength', false, array(1, 11));
+                ->addValidator('StringLength', false, array(1, 11))
+                ->addValidator('Db_RecordExists', true,
+                      array('table' => 'groups', 'field' => 'id',
+                          'messages' => array('noRecordFound' => 'Указанной группы не существует')
+                      )
+                  );
 
         $acc_exp_date = new Zend_Form_Element_Text('acc_exp_date');
         $acc_exp_date->setLabel('Действует до:')
