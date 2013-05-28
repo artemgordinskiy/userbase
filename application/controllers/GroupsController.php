@@ -78,7 +78,15 @@ class GroupsController extends Zend_Controller_Action
             if($del === 'Да') {
                 $id = (int)$this->getRequest()->getPost('id');
                 $groups = new Application_Model_DbTable_Groups();
+                $memberCount = $groups->getMemberCount($id);
+
+                if($memberCount > 0) {
+                    $customers = new Application_Model_DbTable_Customers;
+                    $customers ->deleteEverybodyInAGroup($id);
+                }
+
                 $groups->deleteGroup($id);
+
             }
             $this->_helper->redirector('index');
         } else {
@@ -86,7 +94,7 @@ class GroupsController extends Zend_Controller_Action
             $groups = new Application_Model_DbTable_Groups();
             $this->view->group = $groups->getGroup($id);
             $memberCount = $groups->getMemberCount($id);
-            $memberCount = (int)$memberCount[0]['memberCount'];
+            $memberCount = (int)$memberCount;
             if($memberCount > 0) {
                 $this->view->memberCount = $memberCount;
                 $this->view->notEmpty = true;

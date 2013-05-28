@@ -23,7 +23,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
 
         $query = $this->select();
         $query->setIntegrityCheck(false)
-              ->from('customers', array('customers.group_id', 'customers.id', 'login', 'email', 'userpic_ext', 'acc_exp_date'))
+              ->from('customers', array('customers.group_id', 'customers.id', 'login', 'email', 'acc_exp_date'))
               ->joinLeft('groups', 'customers.group_id = groups.id', 'name as group_name');
 
         if($filterById > 0) {
@@ -56,35 +56,39 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return [ARR]           Массив данных пользователя, в случае успешного запроса. Иначе — Exception;
      */
     public function getCustomer($id) {
-        $id = (int)$id;
-        $select = $this->select();
 
-        if($id <= 0) {
-            throw new Exception('Указан несуществующий ID группы: ' . $id . '. Customers.php/getCustomer()');
+        if(!$this->isRealID($id)) {
+            throw new Exception('Ошибка в Groups.php/getCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
         }
 
+        $select = $this->select();
         $select->where('id = ?', (int)$id);
         $row = $this->_fetch($select);
         $row = $row[0];
-        // Если запрос прошел удачно, в $row будет либо массив, либо объект
-        if(is_array($row) || is_object($row)) {
-            return $row;
-        } else {
-            throw new Exception('Клиента номер ' . $id . ' не существует.');
+        // Если запрос прошел удачно, в $row будет массив с данными
+        if(!is_array($row)) {
+            throw new Exception('Ошибка в Groups.php/getCustomer(). $id = ' . $id);
         }
+
+        return $row;
+
     }
 
     /**
-     * Добавление нового пользователя
+     * Добавляет нового пользователя
      * @param  [INT]   $group_id      ID группы, к которой принадлежит пользователь
      * @param  [STR]   $acc_exp_date Дата и время просрочки аккаунта в формате '9999-12-31 23:59:59'
      * @param  [STR]   $pass         Пароль, до 64 символов;
      * @param  [STR]   $login        Логин, до 64 символов;
      * @param  [STR]   $email        Электропочта, до 64 символов;
-     * @return [BOOL]                True, если запрос прошел удачно, иначе создает Exception;
+     * @return [BOOL]                True, если запрос прошел удачно, иначе кидает Exception;
      */
     public function addCustomer($group_id = null, $acc_exp_date = null, $pass = null, $login, $email, $userpicExt = null) {
-        $group_id = (int)$group_id;
+
+        $groups = new Application_Model_DbTable_Groups();
+        if(!$groups->isRealID($group_id)) {
+            throw new Exception('Ошибка в Groups.php/addCustomer(). Неверный/несуществующий ID группы: ' . print_r($group_id));
+        }
 
         $data = array(
             'group_id' => $group_id,
@@ -108,11 +112,12 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         $result = $this->insert($data);
         $result = (int)$result;
 
-        if(is_int($result)) {
-            return $result;
-        } else {
-            throw new Exception('Не получилось добавить клиента.');
+        if($result === 0) {
+            throw new Exception('Ошибка в Groups.php/addCustomer(). $result = ' . $result);
         }
+
+        return $result;
+
     }
 
     /**
@@ -126,18 +131,24 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return[BOOL]              True, при успехе; Иначе — Exception
      */
     public function editCustomer($id, $group_id, $acc_exp_date, $pass, $login, $email, $userpicExt) {
-        $id = (int)$id;
-        $group_id = (int)$group_id;
+
+        if(!$this->isRealID($id)) {
+            throw new Exception('Ошибка в Groups.php/editCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
+        }
+
+        $groups = new Application_Model_DbTable_Groups();
+        if(!$groups->isRealID($group_id)) {
+            throw new Exception('Ошибка в Groups.php/editCustomer(). Неверный/несуществующий ID группы: ' . print_r($group_id));
+        }
 
         $data = array(
             'acc_exp_date' => $acc_exp_date,
             'login' => $login,
             'email' => $email,
+            'group_id' => $group_id
         );
 
-        if($id > 0) {
-            $data['group_id'] = $group_id;
-        }
+
 
         if(strlen($pass) > 0) {
             $generatedSalt = $this->generatePassSalt(50);
@@ -165,11 +176,9 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return [BOOL]         True, при успехе; Иначе — Exception
      */
     public function deleteCustomer($id) {
-        // (int) переваривает что угодно, даже буквы (в «0»). Так что, с безопасностью должно быть всё ок.
-        $id = (int)$id;
 
-        if($id <= 0) {
-            throw new Exception('Указан несуществующий ID группы: ' . $id . '. Customers.php/getMemberCount()');
+        if(!$this->isRealID($id)) {
+            throw new Exception('Ошибка в Groups.php/deleteCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
         }
 
         // метод delete() возвращает количество затронутых рядов, сохраним его для проверки.
@@ -190,12 +199,88 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return string               Строка указанной длины
      */
     public function generatePassSalt($length) {
-        $characters = '!@#$%^&*()_+0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $characters = '}{[]"/\|;!@#$%^&*()_+0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[rand(0, strlen($characters) - 1)];
         }
         return $randomString;
+    }
+
+    /**
+     * Удаляет всех пользователей в группе, по ID.
+     * Сделано как замена/дополнение к каскадному удалению в БД,
+     * т.к. нужно удалять и пользовательские изображения.
+     * @param  [INT]    $groupId   ID группы
+     * @return [BOOL]              Возвращает true, если никаких ошибок не произошло.
+     */
+    public function deleteEverybodyInAGroup($groupId) {
+
+        $groups = new Application_Model_DbTable_Groups();
+        if(!$groups->isRealID($groupId)) {
+            throw new Exception('Ошибка в Customers.php/deleteEverybodyInAGroup(). Неверный/несуществующий ID группы: ' . print_r($groupId));
+        }
+
+        try {
+            $query = $this->select();
+            $query->from('customers', array('id'))
+                  ->where('group_id = ?', $groupId);
+
+            $resultSet = $this->_fetch($query);
+        } catch(PDOException $e) {
+            throw new Exception('Ошибка в Customers.php/deleteEverybodyInAGroup(): ' . $e->getMessage());
+        } catch(Exception $e) {
+            throw new Exception('Ошибка в Customers.php/deleteEverybodyInAGroup(): ' . $e->getMessage());
+        }
+
+        if(!is_array($resultSet)) {
+            throw new Exception('Ошибка в Customers.php/deleteEverybodyInAGroup(): неправильный результат из БД:' . $resultSet);
+        }
+
+        foreach ($resultSet as $group => $_id) {
+            $this->deleteCustomer($_id['id']);
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Производит проверку данного ID клиента, сверяя его с БД.
+     * @param  [INT]  $id   ID группы
+     * @return [BOOL]       Результат проверки.
+     */
+    public function isRealID($id) {
+        $id = (int)$id;
+
+        if($id <= 0) {
+            return false;
+        }
+
+        try {
+            $query = $this->select();
+            $query->from('customers', array('id'))->order('id');
+            $rowSet = $this->_fetch($query);
+            $IDs = array();
+        } catch(PDOException $e) {
+            throw new Exception('Ошибка в Customers.php/isRealID(): ' . $e->getMessage());
+        } catch(Exception $e) {
+            throw new Exception('Ошибка в Customers.php/isRealID(): ' . $e->getMessage());
+        }
+
+        if(!is_array($rowSet)) {
+            throw new Exception('Ошибка в Customers.php/isRealID(). Неправильный тип переменной. Содержимое: ' . print_r($rowSet));
+        }
+
+        foreach ($rowSet as $group => $_id) {
+            array_push($IDs, $_id['id']);
+        }
+
+        if(!in_array($id, $IDs)){
+            return false;
+        }
+
+        return true;
     }
 
 }

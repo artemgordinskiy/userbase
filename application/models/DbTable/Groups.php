@@ -16,6 +16,7 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
     public function fetchAllGroups($page = 1, $orderBy = 'id', $orderDirection = 'ASC', $resultCount = 10) {
         $tableColumns = $this->info(Zend_Db_Table_Abstract::COLS);
         array_push($tableColumns, 'memberCount');
+
         $page = (int)$page;
         $resultCount = (int)$resultCount;
 
@@ -43,19 +44,20 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
      * @return [ARR]        Массив данных группы, в случае успешного запроса. Иначе — Exception;
      */
     public function getGroup($id) {
-        $id = (int)$id;
 
-        if($id <= 0) {
-            throw new Exception('Указан несуществующий ID группы: ' . $id . '. Groups.php/getGroup()');
+        if(!$this->isRealID($id)) {
+            throw new Exception('Ошибка в Groups.php/getMemberCount(). Неверный/несуществующий ID группы: ' . print_r($id));
         }
 
         $row = $this->fetchRow('id=' . $id);
-        // Если запрос прошел удачно, в $row будет либо массив, либо объект
-        if(is_array($row) || is_object($row)) {
-            return $row->toArray();
-        } else {
+        $row = $row->toArray();
+        // Если запрос прошел удачно, в $row будет либо массив данных группы
+        if(!is_array($row)) {
             throw new Exception('Группы с ID #' . $id . ' не существует.');
         }
+
+        return $row;
+
     }
 
     /**
@@ -71,11 +73,13 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
         // «parameter binding» производится «под капотом»
         $result = $this->insert($data);
         $result = (int)$result;
-        if(is_int($result)) {
-            return true;
-        } else {
+
+        if($result <= 0) {
             throw new Exception('Не получилось добавить группу.' . $result);
         }
+
+        return true;
+
     }
 
     /**
@@ -85,10 +89,9 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
      * @return  [BOOL]             True, при успехе; Иначе — Exception
      */
     public function editGroup($id, $name) {
-        $id = (int)$id;
 
-        if($id <= 0) {
-            throw new Exception('Указан несуществующий ID группы: ' . $id . '. Groups.php/editGroup()');
+        if(!$this->isRealID($id)) {
+            throw new Exception('Ошибка в Groups.php/editGroup(). Неверный/несуществующий ID группы: ' . print_r($id));
         }
 
         $data = array(
@@ -98,35 +101,41 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
         // «parameter binding» производится «под капотом»
         $result = $this->update($data, 'id=' . $id);
         $result = (int)$result;
-        if($result >= 0) {
-            return true;
-        } else {
-            throw new Exception('Не получилось изменить информацию группы №' . $id . '. Вероятнее всего, ее не существует.');
+
+        if($result !== 1 && $result !== 0) {
+            throw new Exception('Ошибка в Groups.php/editGroup(); $id = ' . $id . '; $result = ' . $result);
         }
+
+        return true;
+
     }
 
     /**
-     * Удаляет группы по ID
+     * Удаляет группу по ID
      * @param  [INT]    $id    ID группы;
      * @return [BOOL]          True, при успехе; Иначе — Exception
      */
     public function deleteGroup($id) {
-        // (int) переваривает что угодно, даже буквы (в «0»). Так что, с безопасностью должно быть всё ок.
-        $id = (int)$id;
 
-        if($groupID <= 0) {
-            throw new Exception('Указан несуществующий ID группы: ' . $id . '. Groups.php/deleteGroup()');
+        if(!$this->isRealID($id)) {
+            throw new Exception('Ошибка в Groups.php/deleteGroup(). Неверный/несуществующий ID группы: ' . print_r($id));
         }
 
         // функция delete() возвращает количество затронутых рядов. Сохраняем его для проверки.
         $rowsAffected = $this->delete('id=' . $id);
-        if($rowsAffected === 1) {
-            return true;
-        } else {
-            throw new Exception('Не получилось удалить группу №' . $id . '. Вероятнее всего, ее не существует.');
+        $rowsAffected = (int)$rowsAffected;
+
+        if($rowsAffected !== 1) {
+            throw new Exception('Произошла ошибка при удалении группы №' . $id . '. $rowsAffected = ' . $rowsAffected);
         }
+
+        return true;
     }
 
+    /**
+     * Выбирает из БД только непустые группы
+     * @return [ARR]    Массив групп
+     */
     public function getAllGroupsWithMembers() {
         $query = $this->select();
         $query->setIntegrityCheck(false)
@@ -142,23 +151,75 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
         }
     }
 
+    /**
+     * Выдает количество клиентов в группе по ID
+     * @param  [INT]    $groupID   ID группы
+     * @return [ARR]               Массив с результатом
+     */
     public function getMemberCount($groupID) {
         $groupID = (int)$groupID;
 
-        if($groupID <= 0) {
-            throw new Exception('Указан несуществующий ID группы: ' . $groupID . '. Groups.php/getMemberCount()');
+        if(!$this->isRealID($groupID)) {
+            throw new Exception('Ошибка в Groups.php/getMemberCount(). Неверный/несуществующий ID группы: ' . print_r($groupID));
         }
 
-        $query = $this->select();
-        $query->setIntegrityCheck(false)
-              ->from('groups', array('COUNT(customers.id) as memberCount'))
-              ->joinLeft('customers', 'groups.id = customers.group_id', null)
-              ->whereId($groupID);
+        try {
+            $query = $this->select();
+            $query->setIntegrityCheck(false)
+                  ->from('groups', array('COUNT(customers.id) as memberCount'))
+                  ->joinLeft('customers', 'groups.id = customers.group_id', null)
+                  ->where('groups.id = ?', $groupID);
 
-        if(is_array($query) || is_object($query)) {
-            return $this->_fetch($query);
-        } else {
-            throw new Exception('Ошибка при работе с DB, в функции getMemberCount()');
+            $memberCount = $this->_fetch($query);
+        } catch(PDOException $e) {
+            throw new Exception('Ошибка в Groups.php/getMemberCount(): ' . $e->getMessage());
+        } catch(Exception $e) {
+            throw new Exception('Ошибка в Groups.php/getMemberCount(): ' . $e->getMessage());
         }
+
+        if(!is_array($memberCount)) {
+            throw new Exception('Ошибка в Groups.php/getMemberCount(). Неожиданный тип $result. Содержимое: ' . print_r($result));
+        }
+
+        return $memberCount[0]['memberCount'];
+
+    }
+
+    /**
+     * Производит проверку данного ID группы, сверяя его с БД.
+     * @param  [INT]  $id   ID группы
+     * @return [BOOL]       Результат проверки.
+     */
+    public function isRealID($id) {
+        $id = (int)$id;
+
+        if($id <= 0) {
+            return false;
+        }
+
+        try {
+            $query = $this->select();
+            $query->from('groups', array('id'))->order('id');
+            $rowSet = $this->_fetch($query);
+            $IDs = array();
+        } catch(PDOException $e) {
+            throw new Exception('Ошибка в Groups.php/isRealID(): ' . $e->getMessage());
+        } catch(Exception $e) {
+            throw new Exception('Ошибка в Groups.php/isRealID(): ' . $e->getMessage());
+        }
+
+        if(!is_array($rowSet)) {
+            throw new Exception('Ошибка в Groups.php/isRealID(). Неправильный тип переменной. Содержимое: ' . print_r($rowSet));
+        }
+
+        foreach ($rowSet as $group => $_id) {
+            array_push($IDs, $_id['id']);
+        }
+
+        if(!in_array($id, $IDs)){
+            return false;
+        }
+
+        return true;
     }
 }
