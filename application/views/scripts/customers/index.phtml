@@ -46,7 +46,6 @@ $this->headTitle($this->title);
             <th><a title='Сортировать по логину' href='<?php echo $this->url(array('sort'=>'login')) ?>'>Логин</th>
             <th><a title='Сортировать по e-mail' href='<?php echo $this->url(array('sort'=>'email')) ?>'>E-mail</th>
             <th><a title='Сортировать по группе' href='<?php echo $this->url(array('sort'=>'group_name')) ?>'>Группа</th>
-            <th><a title='Сортировать по расширению аватара' href='<?php echo $this->url(array('sort'=>'userpic_ext')) ?>'>Расш. аватара</th>
             <th><a title='Сортировать по дате просрочки аккаунта' href='<?php echo $this->url(array( 'sort'=>'acc_exp_date')) ?>'>Активен до</th>
             <th>&nbsp;</th>
         </tr>
@@ -56,7 +55,6 @@ $this->headTitle($this->title);
             <td><?php echo $this->escape($customer->login);?></td>
             <td><?php echo $this->escape($customer->email);?></td>
             <td><?php echo $this->escape($customer->group_name);?></td>
-            <td><?php echo $this->escape($customer->userpic_ext);?></td>
             <td><?php echo $this->escape($customer->acc_exp_date);?></td>
             <td class='listActions'>
                 <a title='Изменить' href="<?php echo $this->url(array('action'=>'edit', 'id'=>$customer->id));?>"><div class='icon-cog'></div></a>
