@@ -19,7 +19,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
               ->from('customers', array('customers.group_id', 'customers.id', 'login', 'email', 'userpic_ext', 'acc_exp_date'));
         $order = $orderBy . ' ' . $orderDirection;
         if($filterById !== false) {
-            $query->where('customers.group_id = ?', $filterById);
+            $query->where('customers.group_id = ?', (int)$filterById);
         }
 
         if($filterByDate !== false) {
@@ -126,7 +126,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
 
         // update() возвращает количество затронутых рядов, сохраним его для проверки.
         // «parameter binding» производится автоматически, по кажому столбцу.
-        $rowsAffected = (int)$this->update($data, 'id=' . $id);
+        $rowsAffected = (int)$this->update($data, 'id=' . (int)$id);
         if($rowsAffected >= 0) {
             return true;
         } else {
@@ -140,8 +140,9 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @return [BOOL]         True, при успехе; Иначе — Exception
      */
     public function deleteCustomer($id) {
-        // метод delete() возвращает количество затронутых рядов, сохраним его для проверки.
+        // (int) переваривает что угодно, даже буквы (в «0»). Так что, с безопасностью должно быть всё ок.
         $id = (int)$id;
+        // метод delete() возвращает количество затронутых рядов, сохраним его для проверки.
         $rowsAffected = (int)$this->delete('id = ' . $id);
         if($rowsAffected === 1) {
             // Удаляем юзерпик
