@@ -30,7 +30,10 @@ class CustomersController extends Zend_Controller_Action
 
     public function addAction()
     {
-        $form = new Application_Form_Customer();
+        $id = (int)$this->_getParam('id', 0);
+        $groups = new Application_Model_DbTable_Groups();
+        $groupsArr = $groups->getGroupsForTheForm();
+        $form = new Application_Form_Customer(array('customerID' => $id, 'groups' => $groupsArr));
         $form->submit->setLabel('Сохранить');
         $this->view->form = $form;
 
@@ -71,7 +74,9 @@ class CustomersController extends Zend_Controller_Action
     public function editAction()
     {
         $id = (int)$this->_getParam('id', 0);
-        $form = new Application_Form_Customer(array('customerID' => $id));
+        $groups = new Application_Model_DbTable_Groups();
+        $groupsArr = $groups->getGroupsForTheForm();
+        $form = new Application_Form_Customer(array('customerID' => $id, 'groups' => $groupsArr));
 
         $form->submit->setLabel('Сохранить');
         $this->view->form = $form;

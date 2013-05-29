@@ -8,6 +8,8 @@ class Application_Form_Customer extends Zend_Form
         $customerID = $this->getAttrib('customerID');
         $customerID = $customerID !== null ? $customerID : 0;
 
+        $groupsArr = $this->getAttrib('groups');
+
         // «По-кошерному» включить файл со своим валидатором не получилось, поэтому пока так
         require APPLICATION_PATH . '/forms/validators/Expiration_Time.php';
         $exp_time_validator = new Validator_Expiration_Time();
@@ -21,19 +23,18 @@ class Application_Form_Customer extends Zend_Form
         $id = new Zend_Form_Element_Hidden('id');
         $id->addFilter('Int');
 
-        $group_id = new Zend_Form_Element_Text('group_id');
-        $group_id->setLabel('ID группы')
-                ->addFilter('Int')
-                ->setRequired(true)
-                ->addFilter('StripTags')
-                ->addFilter('StringTrim')
-                ->addValidator('NotEmpty')
-                ->addValidator('StringLength', false, array(1, 11))
-                ->addValidator('Db_RecordExists', true,
-                      array('table' => 'groups', 'field' => 'id',
-                          'messages' => array('noRecordFound' => 'Указанной группы не существует')
-                      )
-                  );
+        $group = new Zend_Form_Element_Select('group_id');
+        $group->setLabel('Группа:')
+              ->addMultiOptions($groupsArr)
+              ->addFilter('Int')
+              ->addFilter('StripTags')
+              ->addFilter('StringTrim')
+              ->addValidator('NotEmpty')
+              ->addValidator('Db_RecordExists', true,
+                    array('table' => 'groups', 'field' => 'id',
+                        'messages' => array('noRecordFound' => 'Указанной группы не существует')
+                    )
+                );
 
         $acc_exp_date = new Zend_Form_Element_Text('acc_exp_date');
         $acc_exp_date->setLabel('Действует до:')
@@ -93,7 +94,7 @@ class Application_Form_Customer extends Zend_Form
         $submit->setLabel('Отправить')
                ->setAttribs(array('class'=>'btn'));
 
-        $this->addElements(array($id, $group_id, $acc_exp_date, $login, $pass, $email, $image, $submit));
+        $this->addElements(array($id, $login, $pass, $email, $group, $acc_exp_date, $image, $submit));
 
     }
 

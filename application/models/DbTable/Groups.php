@@ -257,4 +257,32 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
         return $outputForm;
 
     }
+
+    /**
+     * Создает ассоциативный массив с данными группы, пригодный для использования в выпадающих списках форм
+     * @return [ARR]    Массив с данными, вида ['id' => 'name']
+     */
+    public function getGroupsForTheForm() {
+
+        try {
+            $groups = $this->fetchAll();
+        } catch(PDOException $e) {
+            throw new Exception('Ошибка в Groups.php/getGroupsForTheForm(): ' . $e->getMessage());
+        } catch(Exception $e) {
+            throw new Exception('Ошибка в Groups.php/getGroupsForTheForm(): ' . $e->getMessage());
+        }
+
+        $resultSet = array();
+        foreach ($groups as $row => $group) {
+            $resultSet[$group['id']] = $group['name'];
+        }
+
+        if(!is_array($resultSet) || count($resultSet) <= 1) {
+            throw new Exception('Ошибка в Groups.php/getGroupsForTheForm(). Получен пустой, или неправильный массив: ' . var_dump($resultSet));
+        }
+
+        return $resultSet;
+
+    }
+
 }
