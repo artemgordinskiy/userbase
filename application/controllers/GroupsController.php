@@ -17,8 +17,19 @@ class GroupsController extends Zend_Controller_Action
     {
         $this->view->messages = $this->_helper->flashMessenger->getMessages();
         $groups = new Application_Model_DbTable_Groups();
-        $resultSet = $groups->fetchAllGroups($this->_getParam('page', 1), $this->_getParam('sort', 'id'), 'ASC');
+        $resultSet = $groups->fetchAllGroups($this->_getParam('p', 1), $this->_getParam('o', 'id_a'));
         $this->view->groups = $resultSet;
+        $this->view->orderLinks = $this->getOrderLinks();
+    }
+
+    private function getOrderLinks() {
+        $currentSortTerm = $this->_getParam('o', null);
+        $orderLinksArr = array();
+        $orderLinksArr['id'] = $currentSortTerm === 'id_a' ? 'id_d' : 'id_a';
+        $orderLinksArr['name'] = $currentSortTerm === 'nm_a' ? 'nm_d' : 'nm_a';
+        $orderLinksArr['memberCount'] = $currentSortTerm === 'mc_a' ? 'mc_d' : 'mc_a';
+
+        return $orderLinksArr;
     }
 
     public function addAction()

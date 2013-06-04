@@ -13,9 +13,18 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
      * @param  [INT]   $resultCount      Количество результатов
      * @return [ARR]                     Массив с результатами
      */
-    public function fetchAllGroups($page = 1, $orderBy = 'id', $orderDirection = 'ASC', $resultCount = 10) {
+    public function fetchAllGroups($page = 1, $orderTerm = 'id_a', $resultCount = 10) {
         $tableColumns = $this->info(Zend_Db_Table_Abstract::COLS);
         array_push($tableColumns, 'memberCount');
+
+        $orderTerms = array(
+            'id_a' => 'id ASC',
+            'id_d' => 'id DESC',
+            'nm_a' => 'name ASC',
+            'nm_d' => 'name DESC',
+            'mc_a' => 'memberCount ASC',
+            'mc_d' => 'memberCount DESC'
+        );
 
         $page = (int)$page;
         $resultCount = (int)$resultCount;
@@ -26,10 +35,8 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
               ->joinLeft('customers', 'groups.id = customers.group_id', null)
               ->group('groups.name');
 
-        if(in_array($orderBy, $tableColumns)) {
-            $order = $orderBy . ' ';
-            $order .= $orderDirection === 'ASC' ? 'ASC' : 'DESC';
-            $query->order($order);
+        if(array_key_exists($orderTerm, $orderTerms)) {
+            $query->order($orderTerms[$orderTerm]);
         };
 
         $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($query));

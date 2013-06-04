@@ -4,9 +4,9 @@ $this->headTitle($this->title);
 ?>
 <table id='groupsTable'>
     <tr class='tableData'>
-        <th><a title='Сортировать по ID' href='<?php echo $this->url(array('sort'=>'id')) ?>'>Код</a></th>
-        <th><a title='Сортировать по названию' href='<?php echo $this->url(array('sort'=>'name')) ?>'>Название</a></th>
-        <th><a title='Сортировать по количеству членов группы' href='<?php echo $this->url(array('sort'=>'memberCount')) ?>'>Абонентов</a></th>
+        <th><a title='Сортировать по ID' href='<?php echo $this->url(array('o'=>$this->orderLinks['id'])) ?>'>Код</a></th>
+        <th><a title='Сортировать по названию' href='<?php echo $this->url(array('o'=>$this->orderLinks['name'])) ?>'>Название</a></th>
+        <th><a title='Сортировать по количеству членов группы' href='<?php echo $this->url(array('o'=>$this->orderLinks['memberCount'])) ?>'>Абонентов</a></th>
         <th>&nbsp;</th>
     </tr>
     <?php foreach($this->groups as $group) : ?>
