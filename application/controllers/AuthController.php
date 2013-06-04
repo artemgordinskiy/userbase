@@ -5,6 +5,10 @@ class AuthController extends Zend_Controller_Action
 
     public function init()
     {
+        $auth = Zend_Auth::getInstance();
+        if ($auth->hasIdentity()){
+          $this->_redirect('/customers/index');
+        }
     }
 
     public function indexAction()
