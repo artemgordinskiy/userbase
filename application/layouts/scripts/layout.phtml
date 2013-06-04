@@ -8,6 +8,9 @@ $groupsIndexLink = $this->url(array('controller'=>'groups', 'action'=>'index'));
 $groupsAddLink = $this->url(array('controller'=>'groups', 'action'=>'add'));
 echo $this->doctype() . "\n";
 
+$auth = Zend_Auth::getInstance();
+if ($auth->hasIdentity()) { $this->loggedIn = true; }
+
 ?>
 <html>
     <head>
@@ -42,6 +45,9 @@ echo $this->doctype() . "\n";
                                     <li><a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'add')); ?>">Добавить</a></li>
                                 </ul>
                             </li>
+                            <?php if ($this->loggedIn) : ?>
+                                <li><a href="<?php echo $this->url(array('controller'=>'auth', 'action'=>'logout')); ?>">Выйти</a></li>
+                            <?php endif; ?>
                         </ul>
                     </div>
                 </div>

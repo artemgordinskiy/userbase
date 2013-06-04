@@ -42,6 +42,17 @@ class AuthController extends Zend_Controller_Action
         $this->view->loginForm = $loginForm;
     }
 
+    public function logoutAction() {
+        $auth = Zend_Auth::getInstance();
+        if ($auth->hasIdentity()){
+            $auth->clearIdentity();
+            $this->_helper->flashMessenger->addMessage('Выход выполнен успешно');
+            $this->_redirect('auth/login');
+        } else {
+            $this->_redirect('auth/login');
+        }
+    }
+
 }
 
 
