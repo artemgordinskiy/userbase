@@ -9,7 +9,7 @@ class CustomersController extends Zend_Controller_Action
         $request = $this->getRequest();
         $auth = Zend_Auth::getInstance();
         if (!$auth->hasIdentity()){
-          $this->_redirect('/auth/index/from/customers');
+            $this->_redirect('/auth/login/from/customers');
         }
     }
 

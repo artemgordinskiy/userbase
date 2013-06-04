@@ -8,7 +8,7 @@ class GroupsController extends Zend_Controller_Action
         $request = $this->getRequest();
         $auth = Zend_Auth::getInstance();
         if (!$auth->hasIdentity()){
-          $this->_redirect('/auth/index/from/groups');
+            $this->_redirect('/auth/login/from/groups');
         }
         $this->view->messages = $this->_helper->flashMessenger->getMessages();
     }
