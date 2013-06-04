@@ -46,7 +46,9 @@ if ($auth->hasIdentity()) { $this->loggedIn = true; }
                                 </ul>
                             </li>
                             <?php if ($this->loggedIn) : ?>
-                                <li><a href="<?php echo $this->url(array('controller'=>'auth', 'action'=>'logout')); ?>">Выйти</a></li>
+                                <li>
+                                    <a href="<?php echo $this->url(array('controller'=>'auth', 'action'=>'logout')); ?>">Выйти <span class="icon-signout"></span></a>
+                                </li>
                             <?php endif; ?>
                         </ul>
                     </div>
