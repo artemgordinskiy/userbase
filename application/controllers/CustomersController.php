@@ -16,7 +16,7 @@ class CustomersController extends Zend_Controller_Action
     public function indexAction()
     {
         $customers = new Application_Model_DbTable_Customers();
-        $pageNum = (int)$this->_getParam('page', 1);
+        $pageNum = (int)$this->_getParam('p', 1);
         $sortBy = $this->_getParam('sort', 'id');
         $filterById = $this->_getParam('filterByID', false);
         $expiration = $this->_getParam('expiration', false);
