@@ -35,10 +35,8 @@ echo $this->doctype() . "\n";
                                     <li><a href="<?php echo $this->url(array('controller'=>'customers', 'action'=>'add')); ?>">Добавить</a></li>
                                 </ul>
                             </li>
-                        </ul>
-                        <ul class="nav">
                             <li class="dropdown">
-                                <a href="#" data-toggle="dropdown">Группы <b class="caret"></b></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Группы <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li><a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'index')); ?>" class="dropdown-toggle">Посмотреть</a></li>
                                     <li><a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'add')); ?>">Добавить</a></li>
