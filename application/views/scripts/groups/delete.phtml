@@ -16,7 +16,7 @@ if($this->notEmpty === true) {
 <form action="<?php echo $this->url(array('action'=>'delete')); ?>" style="text-align: center;" method="POST">
     <div>
           <input type="hidden" name="id" value="<?php echo $this->group['id']; ?>" />
-          <input type="submit" name="del" value="Да" />
-          <input type="submit" name="del" value="Нет" />
+          <input class="btn" type="submit" name="del" value="Да" />
+          <input class="btn" type="submit" name="del" value="Нет" />
     </div>
 </form>
