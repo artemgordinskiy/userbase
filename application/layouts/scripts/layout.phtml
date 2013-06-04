@@ -6,7 +6,6 @@ $customersIndexLink = $this->url(array('controller'=>'customers', 'action'=>'ind
 $customersAddLink = $this->url(array('controller'=>'customers', 'action'=>'add'));
 $groupsIndexLink = $this->url(array('controller'=>'groups', 'action'=>'index'));
 $groupsAddLink = $this->url(array('controller'=>'groups', 'action'=>'add'));
-
 echo $this->doctype() . "\n";
 
 ?>
@@ -19,8 +18,6 @@ echo $this->doctype() . "\n";
         echo $this->headLink()->prependStylesheet($this->baseUrl() . '/css/font-awesome.css') . "\n";
         echo $this->headLink()->prependStylesheet($this->baseUrl() . '/css/bootstrap.css') . "\n";
         echo $this->headLink()->prependStylesheet('http://fonts.googleapis.com/css?family=Source+Code+Pro&subset=latin-ext') . "\n";
-        echo $this->headScript()->prependFile('http://code.jquery.com/jquery-2.0.0.min.js');
-        echo $this->headScript()->prependFile($this->baseUrl() . '/js/bootstrap.min.js');
         ?>
     </head>
     <body>
@@ -53,8 +50,6 @@ echo $this->doctype() . "\n";
             </div>
             <h1><?php echo $this->escape($this->title); ?></h1>
             <br />
-            <br />
-            <?php echo $this->layout()->content . "\n"; ?>
             <?php if (count($this->messages)) : ?>
                 <div class="alert alert-success">
                     <button type="button" class="close" data-dismiss="alert">×</button>
@@ -62,7 +57,11 @@ echo $this->doctype() . "\n";
                 </div>
             <?php
                 endif;
+                echo $this->layout()->content . "\n";
+            ?>
         </div>
+        <script src="http://code.jquery.com/jquery-2.0.1.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
         <script src="<?php echo $this->baseUrl() . '/js/main.js'; ?>"></script>
     </body>
 </html>
