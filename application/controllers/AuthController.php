@@ -5,13 +5,18 @@ class AuthController extends Zend_Controller_Action
 
     public function init() {
         $this->view->messages = $this->_helper->flashMessenger->getMessages();
-        $auth = Zend_Auth::getInstance();
-        if ($auth->hasIdentity()){
-          $this->_redirect('/customers/index');
-        }
     }
 
     public function indexAction() {
+        $auth = Zend_Auth::getInstance();
+        if ($auth->hasIdentity()){
+            $this->_redirect('/customers/index');
+        } else {
+            $this->_redirect('auth/login');
+        }
+    }
+
+    public function loginAction() {
         $back = $this->_getParam('from', 'customers');
 
         $loginForm = new Application_Form_Auth();
