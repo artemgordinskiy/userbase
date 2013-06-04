@@ -3,16 +3,15 @@
 class AuthController extends Zend_Controller_Action
 {
 
-    public function init()
-    {
+    public function init() {
+        $this->view->messages = $this->_helper->flashMessenger->getMessages();
         $auth = Zend_Auth::getInstance();
         if ($auth->hasIdentity()){
           $this->_redirect('/customers/index');
         }
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $back = $this->_getParam('from', 'customers');
 
         $loginForm = new Application_Form_Auth();
@@ -22,11 +21,12 @@ class AuthController extends Zend_Controller_Action
                 $login = $loginForm->getValue('username');
                 $password = $loginForm->getValue('password');
 
-                $autorization  = new Application_Model_DbTable_Auth($login, $password);
+                $autorization = new Application_Model_DbTable_Auth($login, $password);
 
                 $result = $autorization->authorize();
 
                 if ($result) {
+                    $this->_helper->flashMessenger->addMessage('Вход выполнен успешно');
                     $this->_redirect($back);
                 } else {
                     echo '<div class="alert alert-error" style="width: 500px; margin: 0 auto; text-align:center;">Неправильный логин или пароль</div>';

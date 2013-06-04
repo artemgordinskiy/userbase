@@ -10,10 +10,12 @@ class GroupsController extends Zend_Controller_Action
         if (!$auth->hasIdentity()){
           $this->_redirect('/auth/index/from/groups');
         }
+        $this->view->messages = $this->_helper->flashMessenger->getMessages();
     }
 
     public function indexAction()
     {
+        $this->view->messages = $this->_helper->flashMessenger->getMessages();
         $groups = new Application_Model_DbTable_Groups();
         $resultSet = $groups->fetchAllGroups($this->_getParam('page', 1), $this->_getParam('sort', 'id'), 'ASC');
         $this->view->groups = $resultSet;
@@ -33,7 +35,7 @@ class GroupsController extends Zend_Controller_Action
                 $name = $form->getValue('name');
                 $groups = new Application_Model_DbTable_Groups();
                 $groups->addGroup($name);
-
+                $this->_helper->flashMessenger->addMessage('Группа успешно добавлена');
                 $this->_helper->redirector('index');
             } else {
                 $form->populate($formData);
@@ -56,7 +58,7 @@ class GroupsController extends Zend_Controller_Action
                 $name = $form->getValue('name');
                 $groups = new Application_Model_DbTable_Groups();
                 $groups->editGroup($id, $name);
-
+                $this->_helper->flashMessenger->addMessage('Информация группы сохранена');
                 $this->_helper->redirector('index');
             } else {
                 $form->populate($formData);
@@ -88,6 +90,7 @@ class GroupsController extends Zend_Controller_Action
                 $groups->deleteGroup($id);
 
             }
+            $this->_helper->flashMessenger->addMessage('Группа была успешно удалена');
             $this->_helper->redirector('index');
         } else {
             $id = $this->_getParam('id', 0);

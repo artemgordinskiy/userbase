@@ -198,6 +198,10 @@ div.groups-dropdown-filter, div.expiration-filter-dropdown {
     list-style-type: none;
 }
 
+.alert {
+    width: 90%;
+    margin: 0 auto 20px auto;
+}
 /* ==========================================================================
    Helper classes
    ========================================================================== */

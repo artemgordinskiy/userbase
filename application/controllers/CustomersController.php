@@ -5,6 +5,7 @@ class CustomersController extends Zend_Controller_Action
 
     public function init()
     {
+        $this->view->messages = $this->_helper->flashMessenger->getMessages();
         $request = $this->getRequest();
         $auth = Zend_Auth::getInstance();
         if (!$auth->hasIdentity()){
@@ -63,7 +64,7 @@ class CustomersController extends Zend_Controller_Action
                     $upload->addFilter('Rename', array('target' => PUBLIC_PATH . '/images/uploads/' . $newID . '.' . $userpicExt, 'overwrite' => true));
                     $upload->receive();
                 }
-
+                $this->_helper->flashMessenger->addMessage('Клиент был успешно добавлен в базу');
                 $this->_helper->redirector('index');
             } else {
                 $form->populate($formData);
@@ -106,7 +107,7 @@ class CustomersController extends Zend_Controller_Action
 
                 $customers = new Application_Model_DbTable_Customers();
                 $customers->editCustomer($id, $group_id, $acc_exp_date, $pass, $login, $email, $userpicExt);
-
+                $this->_helper->flashMessenger->addMessage('Информация клиента сохранена');
                 $this->_helper->redirector('index');
             } else {
                 $form->populate($formData);
@@ -128,6 +129,7 @@ class CustomersController extends Zend_Controller_Action
                 $id = $this->getRequest()->getPost('id');
                 $customers = new Application_Model_DbTable_Customers();
                 $customers->deleteCustomer($id);
+                $this->_helper->flashMessenger->addMessage('Клиент успешно удален');
             }
             $this->_helper->redirector('index');
         } else {
