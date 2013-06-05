@@ -37,7 +37,9 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
 
         if(array_key_exists($orderTerm, $orderTerms)) {
             $query->order($orderTerms[$orderTerm]);
-        };
+        } else {
+            $query->order('id ASC');
+        }
 
         $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($query));
         $paginator->setItemCountPerPage($resultCount);
