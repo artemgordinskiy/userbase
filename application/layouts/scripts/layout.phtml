@@ -24,7 +24,6 @@ if ($auth->hasIdentity()) { $this->loggedIn = true; }
         ?>
     </head>
     <body>
-
         <div id="content">
             <div class="navbar navbar-static-top" style="margin: -1px -1px 0; padding-bottom: 25px;">
                 <div class="navbar-inner">
@@ -32,22 +31,38 @@ if ($auth->hasIdentity()) { $this->loggedIn = true; }
                         <a class="brand" href="/">UserBase</a>
                         <ul class="nav">
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Пользователи <b class="caret"></b></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Пользователи <i class="caret"></i></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="<?php echo $this->url(array('controller'=>'customers', 'action'=>'index')); ?>">Посмотреть</a></li>
-                                    <li><a href="<?php echo $this->url(array('controller'=>'customers', 'action'=>'add')); ?>">Добавить</a></li>
+                                    <li>
+                                        <a href="<?php echo $this->url(array('controller'=>'customers', 'action'=>'index')); ?>">
+                                            Посмотреть
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo $this->url(array('controller'=>'customers', 'action'=>'add')); ?>">
+                                        Добавить
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Группы <b class="caret"></b></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Группы <i class="caret"></i></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'index')); ?>" class="dropdown-toggle">Посмотреть</a></li>
-                                    <li><a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'add')); ?>">Добавить</a></li>
+                                    <li>
+                                        <a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'index')); ?>" class="dropdown-toggle">
+                                            Посмотреть
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'add')); ?>">Добавить</a>
+                                    </li>
                                 </ul>
                             </li>
                             <?php if ($this->loggedIn) : ?>
                                 <li>
-                                    <a href="<?php echo $this->url(array('controller'=>'auth', 'action'=>'logout')); ?>">Выйти <span class="icon-signout"></span></a>
+                                    <a href="<?php echo $this->url(array('controller'=>'auth', 'action'=>'logout')); ?>">
+                                        Выйти <i class="icon-signout"></i>
+                                    </a>
                                 </li>
                             <?php endif; ?>
                         </ul>
