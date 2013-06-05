@@ -16,20 +16,58 @@ class GroupsController extends Zend_Controller_Action
     public function indexAction()
     {
         $this->view->messages = $this->_helper->flashMessenger->getMessages();
+        $currentSort = $this->_getParam('o', 'default');
         $groups = new Application_Model_DbTable_Groups();
-        $resultSet = $groups->fetchAllGroups($this->_getParam('p', 1), $this->_getParam('o', 'id_a'));
+        $resultSet = $groups->fetchAllGroups($this->_getParam('p', 1), $currentSort);
         $this->view->groups = $resultSet;
-        $this->view->orderLinks = $this->getOrderLinks();
+        $this->view->orderLinks = $this->getOrderLinks($currentSort);
     }
 
-    private function getOrderLinks() {
-        $currentSortTerm = $this->_getParam('o', null);
-        $orderLinksArr = array();
-        $orderLinksArr['id'] = $currentSortTerm === 'id_a' ? 'id_d' : 'id_a';
-        $orderLinksArr['name'] = $currentSortTerm === 'nm_a' ? 'nm_d' : 'nm_a';
-        $orderLinksArr['memberCount'] = $currentSortTerm === 'mc_a' ? 'mc_d' : 'mc_a';
+    private function getOrderLinks($currentSortTerm) {
+        // Не лучшее решение, конечно, но лучше, чем нагромождение "if"-ов
+        $orderLinksArr = array(
+            'id_a' => array(
+                'id' => array('id_d', 'icon-sort-up'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            ),
+            'id_d' => array(
+                'id' => array('id_a', 'icon-sort-down'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            ),
+            'nm_a' => array(
+                'id' => array('id_d', 'icon-sort'),
+                'name' => array('nm_d', 'icon-sort-up'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            ),
+            'nm_d' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'name' => array('nm_a', 'icon-sort-down'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            ),
+            'mc_a' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_d', 'icon-sort-up')
+            ),
+            'mc_d' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_a', 'icon-sort-down')
+            ),
+            'default' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            )
+        );
 
-        return $orderLinksArr;
+        if(!array_key_exists($currentSortTerm, $orderLinksArr)) {
+            return $orderLinksArr['default'];
+        }
+
+        return $orderLinksArr[$currentSortTerm];
     }
 
     public function addAction()
