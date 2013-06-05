@@ -23,53 +23,6 @@ class GroupsController extends Zend_Controller_Action
         $this->view->orderLinks = $this->getOrderLinks($currentSort);
     }
 
-    private function getOrderLinks($currentSortTerm) {
-        // Не лучшее решение, конечно, но лучше, чем нагромождение "if"-ов
-        $orderLinksArr = array(
-            'id_a' => array(
-                'id' => array('id_d', 'icon-sort-up'),
-                'name' => array('nm_a', 'icon-sort'),
-                'memberCount' => array('mc_a', 'icon-sort')
-            ),
-            'id_d' => array(
-                'id' => array('id_a', 'icon-sort-down'),
-                'name' => array('nm_a', 'icon-sort'),
-                'memberCount' => array('mc_a', 'icon-sort')
-            ),
-            'nm_a' => array(
-                'id' => array('id_d', 'icon-sort'),
-                'name' => array('nm_d', 'icon-sort-up'),
-                'memberCount' => array('mc_a', 'icon-sort')
-            ),
-            'nm_d' => array(
-                'id' => array('id_a', 'icon-sort'),
-                'name' => array('nm_a', 'icon-sort-down'),
-                'memberCount' => array('mc_a', 'icon-sort')
-            ),
-            'mc_a' => array(
-                'id' => array('id_a', 'icon-sort'),
-                'name' => array('nm_a', 'icon-sort'),
-                'memberCount' => array('mc_d', 'icon-sort-up')
-            ),
-            'mc_d' => array(
-                'id' => array('id_a', 'icon-sort'),
-                'name' => array('nm_a', 'icon-sort'),
-                'memberCount' => array('mc_a', 'icon-sort-down')
-            ),
-            'default' => array(
-                'id' => array('id_a', 'icon-sort'),
-                'name' => array('nm_a', 'icon-sort'),
-                'memberCount' => array('mc_a', 'icon-sort')
-            )
-        );
-
-        if(!array_key_exists($currentSortTerm, $orderLinksArr)) {
-            return $orderLinksArr['default'];
-        }
-
-        return $orderLinksArr[$currentSortTerm];
-    }
-
     public function addAction()
     {
         $form = new Application_Form_Group();
@@ -156,6 +109,52 @@ class GroupsController extends Zend_Controller_Action
         }
     }
 
+    private function getOrderLinks($currentSortTerm) {
+        // Не лучшее решение, конечно, но лучше, чем нагромождение "if"-ов
+        $orderLinksArr = array(
+            'id_a' => array(
+                'id' => array('id_d', 'icon-sort-up'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            ),
+            'id_d' => array(
+                'id' => array('id_a', 'icon-sort-down'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            ),
+            'nm_a' => array(
+                'id' => array('id_d', 'icon-sort'),
+                'name' => array('nm_d', 'icon-sort-up'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            ),
+            'nm_d' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'name' => array('nm_a', 'icon-sort-down'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            ),
+            'mc_a' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_d', 'icon-sort-up')
+            ),
+            'mc_d' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_a', 'icon-sort-down')
+            ),
+            'default' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'name' => array('nm_a', 'icon-sort'),
+                'memberCount' => array('mc_a', 'icon-sort')
+            )
+        );
+
+        if(!array_key_exists($currentSortTerm, $orderLinksArr)) {
+            return $orderLinksArr['default'];
+        }
+
+        return $orderLinksArr[$currentSortTerm];
+    }
 
 }
 
