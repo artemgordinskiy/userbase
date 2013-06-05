@@ -14,9 +14,6 @@ class Application_Model_DbTable_Groups extends Zend_Db_Table_Abstract
      * @return [ARR]                     Массив с результатами
      */
     public function fetchAllGroups($page = 1, $orderTerm = 'id_a', $resultCount = 10) {
-        $tableColumns = $this->info(Zend_Db_Table_Abstract::COLS);
-        array_push($tableColumns, 'memberCount');
-
         $orderTerms = array(
             'id_a' => 'id ASC',
             'id_d' => 'id DESC',
