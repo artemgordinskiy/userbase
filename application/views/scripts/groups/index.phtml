@@ -4,9 +4,21 @@ $this->headTitle($this->title);
 ?>
 <table id='groupsTable'>
     <tr class='tableData'>
-        <th><a title='Сортировать по ID' href='<?php echo $this->url(array('o'=>$this->orderLinks['id'])) ?>'>Код</a></th>
-        <th><a title='Сортировать по названию' href='<?php echo $this->url(array('o'=>$this->orderLinks['name'])) ?>'>Название</a></th>
-        <th><a title='Сортировать по количеству членов группы' href='<?php echo $this->url(array('o'=>$this->orderLinks['memberCount'])) ?>'>Абонентов</a></th>
+        <th>
+            <a title='Сортировать по ID' href='<?php echo $this->url(array('o'=>$this->orderLinks['id'][0])) ?>'>
+                Код <i class="<?php echo $this->escape($this->orderLinks['id'][1]) ?>"></i>
+            </a>
+        </th>
+        <th>
+            <a title='Сортировать по названию' href='<?php echo $this->url(array('o'=>$this->orderLinks['name'][0])) ?>'>
+                Название <i class="<?php echo $this->escape($this->orderLinks['name'][1]) ?>"></i>
+            </a>
+        </th>
+        <th>
+            <a title='Сортировать по количеству участников' href='<?php echo $this->url(array('o'=>$this->orderLinks['memberCount'][0])) ?>'>
+                Абонентов <i class="<?php echo $this->escape($this->orderLinks['memberCount'][1]) ?>"></i>
+            </a>
+        </th>
         <th>&nbsp;</th>
     </tr>
     <?php foreach($this->groups as $group) : ?>
@@ -15,8 +27,12 @@ $this->headTitle($this->title);
         <td><?php echo $this->escape($group->name);?></td>
         <td><?php echo $this->escape($group->memberCount);?></td>
         <td class='listActions'>
-            <a title='Изменить' href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'edit', 'id'=>$group->id));?>"><div class='icon-cog'></div></a>
-            <a title='Удалить' href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'delete', 'id'=>$group->id));?>"><div class='icon-remove'></div></a>
+            <a title='Изменить' href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'edit', 'id'=>$group->id));?>">
+                <i class='icon-cog'></i>
+            </a>
+            <a title='Удалить' href="<?php echo $this->url(array('controller'=>'groups', 'action'=>'delete', 'id'=>$group->id));?>">
+                <i class='icon-remove'></i>
+            </a>
         </td>
     <?php endforeach; ?>
 </table>
