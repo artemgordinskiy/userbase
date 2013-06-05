@@ -17,16 +17,18 @@ class CustomersController extends Zend_Controller_Action
     {
         $customers = new Application_Model_DbTable_Customers();
         $pageNum = (int)$this->_getParam('p', 1);
-        $sortBy = $this->_getParam('sort', 'id');
+        $currentSort = $this->_getParam('o', 'default');
         $filterById = $this->_getParam('filterByID', false);
         $expiration = $this->_getParam('expiration', false);
-        $resultSet = $customers->fetchAllCustomers($pageNum, $sortBy, 'ASC', 10, $filterById, $expiration);
+        $resultSet = $customers->fetchAllCustomers($pageNum, $currentSort, 10, $filterById, $expiration);
         $this->view->customers = $resultSet;
 
         // Пришлось еще раз дергать ДБ, чтобы получить полный список групп для фильтра.
         $groups = new Application_Model_DbTable_Groups();
         $groupsResultSet = $groups->getAllGroupsWithMembers();
         $this->view->groups = $groupsResultSet;
+
+        $this->view->orderLinks = $this->getOrderLinks($currentSort);
     }
 
     public function addAction()
@@ -139,5 +141,93 @@ class CustomersController extends Zend_Controller_Action
         }
     }
 
+    private function getOrderLinks($currentSortTerm) {
+        // Хоть и не лучшее решение, но вряд ли хуже нагромождения "if"-ов
+        $orderLinksArr = array(
+            'id_a' => array(
+                'id' => array('id_d', 'icon-sort-up'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            ),
+            'id_d' => array(
+                'id' => array('id_a', 'icon-sort-down'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            ),
+            'lg_a' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_d', 'icon-sort-up'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            ),
+            'lg_d' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_a', 'icon-sort-down'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            ),
+            'em_a' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_d', 'icon-sort-up'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            ),
+            'em_d' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_a', 'icon-sort-down'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            ),
+            'gr_a' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_d', 'icon-sort-up'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            ),
+            'gr_d' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_a', 'icon-sort-down'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            ),
+            'exp_a' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_d', 'icon-sort-up')
+            ),
+            'exp_d' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_a', 'icon-sort-down')
+            ),
+            'default' => array(
+                'id' => array('id_a', 'icon-sort'),
+                'login' => array('lg_a', 'icon-sort'),
+                'email' => array('em_a', 'icon-sort'),
+                'group' => array('gr_a', 'icon-sort'),
+                'exp_date' => array('exp_a', 'icon-sort')
+            )
+        );
+
+        if(!array_key_exists($currentSortTerm, $orderLinksArr)) {
+            return $orderLinksArr['default'];
+        }
+
+        return $orderLinksArr[$currentSortTerm];
+    }
 
 }

@@ -13,9 +13,19 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
      * @param  [INT]   $resultCount      Количество результатов
      * @return [ARR]                     Массив с результатами
      */
-    public function fetchAllCustomers($page = 1, $orderBy = 'id', $orderDirection = 'ASC', $resultCount = 10, $filterById = false, $filterByDate = false) {
-        $tableColumns = $this->info(Zend_Db_Table_Abstract::COLS);
-        array_push($tableColumns, 'group_name');
+    public function fetchAllCustomers($page = 1, $orderTerm = 'id_a', $resultCount = 10, $filterById = false, $filterByDate = false) {
+        $orderTerms = array(
+            'id_a' => 'id ASC',
+            'id_d' => 'id DESC',
+            'lg_a' => 'login ASC',
+            'lg_d' => 'login DESC',
+            'em_a' => 'email ASC',
+            'em_d' => 'email DESC',
+            'gr_a' => 'group_name ASC',
+            'gr_d' => 'group_name DESC',
+            'exp_a' => 'acc_exp_date ASC',
+            'exp_d' => 'acc_exp_date DESC'
+        );
 
         $page = (int)$page;
         $resultCount = (int)$resultCount;
@@ -30,6 +40,12 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
             $query->where('customers.group_id = ?', $filterById);
         }
 
+        if(array_key_exists($orderTerm, $orderTerms)) {
+            $query->order($orderTerms[$orderTerm]);
+        } else {
+            $query->order('id ASC');
+        }
+
         if($filterByDate !== false) {
             if($filterByDate === 'expired') {
                 $query->where('customers.acc_exp_date < NOW()');
@@ -38,11 +54,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
             }
         }
 
-        if(in_array($orderBy, $tableColumns)) {
-            $order = $orderBy . ' ';
-            $order .= $orderDirection === 'ASC' ? 'ASC' : 'DESC';
-            $query->order($order);
-        };
+
 
         $paginator = new Zend_Paginator(new Zend_Paginator_Adapter_DbTableSelect($query));
         $paginator->setItemCountPerPage((int)$resultCount);

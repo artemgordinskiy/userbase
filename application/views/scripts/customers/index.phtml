@@ -3,7 +3,9 @@ $this->title = "Пользователи";
 $this->headTitle($this->title);
 ?>
 <div class="btn-group expiration-filter-dropdown">
-    <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">По дате <i class="caret"></i></button>
+    <button class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
+        По дате <i class="caret"></i>
+    </button>
     <ul class="dropdown-menu">
         <li>
             <a href="<?php echo $this->url(array('expiration'=>'expired')); ?>">
@@ -23,7 +25,9 @@ $this->headTitle($this->title);
 </div>
 
 <div class="btn-group groups-dropdown-filter">
-    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">По группам <i class="caret"></i></button>
+    <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+        По группам <i class="caret"></i>
+    </button>
     <ul class="dropdown-menu">
         <?php foreach($this->groups as $group): ?>
         <li>
@@ -42,11 +46,31 @@ $this->headTitle($this->title);
 <?php if(count($this->customers) > 0): ?>
     <table id='resultsTable'>
         <tr class='tableData'>
-            <th><a title='Сортировать по ID' href='<?php echo $this->url(array('sort'=>'id')) ?>'>ID</a></th>
-            <th><a title='Сортировать по логину' href='<?php echo $this->url(array('sort'=>'login')) ?>'>Логин</th>
-            <th><a title='Сортировать по e-mail' href='<?php echo $this->url(array('sort'=>'email')) ?>'>E-mail</th>
-            <th><a title='Сортировать по группе' href='<?php echo $this->url(array('sort'=>'group_name')) ?>'>Группа</th>
-            <th><a title='Сортировать по дате просрочки аккаунта' href='<?php echo $this->url(array( 'sort'=>'acc_exp_date')) ?>'>Активен до</th>
+            <th>
+                <a title='Сортировать по ID' href='<?php echo $this->url(array('o'=>$this->orderLinks['id'][0])) ?>'>
+                    ID <i class="<?php echo $this->escape($this->orderLinks['id'][1]) ?>"></i>
+                </a>
+            </th>
+            <th>
+                <a title='Сортировать по логину' href='<?php echo $this->url(array('o'=>$this->orderLinks['login'][0])) ?>'>
+                    Логин <i class="<?php echo $this->escape($this->orderLinks['login'][1]) ?>"></i>
+                </a>
+            </th>
+            <th>
+                <a title='Сортировать по e-mail' href='<?php echo $this->url(array('o'=>$this->orderLinks['email'][0])) ?>'>
+                    E-mail <i class="<?php echo $this->escape($this->orderLinks['email'][1]) ?>"></i>
+                </a>
+            </th>
+            <th>
+                <a title='Сортировать по названию группы' href='<?php echo $this->url(array('o'=>$this->orderLinks['group'][0])) ?>'>
+                    Группа <i class="<?php echo $this->escape($this->orderLinks['group'][1]) ?>"></i>
+                </a>
+            </th>
+            <th>
+                <a title='Сортировать по дате просрочки' href='<?php echo $this->url(array('o'=>$this->orderLinks['exp_date'][0])) ?>'>
+                    Активен до <i class="<?php echo $this->escape($this->orderLinks['exp_date'][1]) ?>"></i>
+                </a>
+            </th>
             <th>&nbsp;</th>
         </tr>
         <?php foreach($this->customers as $customer) : ?>
