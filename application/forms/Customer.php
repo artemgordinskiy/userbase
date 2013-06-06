@@ -106,7 +106,7 @@ class Application_Form_Customer extends Zend_Form
               ->removeDecorator('label');
 
         $submit = new Zend_Form_Element_Submit('submit');
-        $submit->setLabel('Отправить')
+        $submit->setLabel('Сохранить')
                ->setAttribs(array('class'=>'btn'))
                ->removeDecorator('DtDdWrapper');
 
