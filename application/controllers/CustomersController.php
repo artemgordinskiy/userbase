@@ -36,7 +36,6 @@ class CustomersController extends Zend_Controller_Action
         $groups = new Application_Model_DbTable_Groups();
         $groupsArr = $groups->getGroupsForTheForm();
         $form = new Application_Form_Customer(array('customerID' => $id, 'groups' => $groupsArr));
-        $form->submit->setLabel('Сохранить');
         $this->view->form = $form;
 
         // Если форма была отправлена...
