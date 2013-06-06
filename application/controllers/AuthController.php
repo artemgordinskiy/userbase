@@ -17,6 +17,11 @@ class AuthController extends Zend_Controller_Action
     }
 
     public function loginAction() {
+        $auth = Zend_Auth::getInstance();
+
+        if ($auth->hasIdentity()){
+            $this->_redirect('/customers/index');
+        }
         $back = $this->_getParam('from', 'customers');
 
         $loginForm = new Application_Form_Auth();
