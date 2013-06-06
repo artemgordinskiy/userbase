@@ -70,7 +70,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
     public function getCustomer($id) {
 
         if(!$this->isRealID($id)) {
-            throw new Exception('Ошибка в Groups.php/getCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
+            throw new Exception('Ошибка в Customers.php/getCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
         }
 
         $select = $this->select();
@@ -79,7 +79,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         $row = $row[0];
         // Если запрос прошел удачно, в $row будет массив с данными
         if(!is_array($row)) {
-            throw new Exception('Ошибка в Groups.php/getCustomer(). $id = ' . $id);
+            throw new Exception('Ошибка в Customers.php/getCustomer(). $id = ' . $id);
         }
 
         return $row;
@@ -99,7 +99,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
 
         $groups = new Application_Model_DbTable_Groups();
         if(!$groups->isRealID($group_id)) {
-            throw new Exception('Ошибка в Groups.php/addCustomer(). Неверный/несуществующий ID группы: ' . print_r($group_id));
+            throw new Exception('Ошибка в Customers.php/addCustomer(). Неверный/несуществующий ID группы: ' . print_r($group_id));
         }
 
         $data = array(
@@ -125,7 +125,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         $result = (int)$result;
 
         if($result === 0) {
-            throw new Exception('Ошибка в Groups.php/addCustomer(). $result = ' . $result);
+            throw new Exception('Ошибка в Customers.php/addCustomer(). $result = ' . $result);
         }
 
         return $result;
@@ -145,12 +145,12 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
     public function editCustomer($id, $group_id, $acc_exp_date, $pass, $login, $email, $userpicExt) {
 
         if(!$this->isRealID($id)) {
-            throw new Exception('Ошибка в Groups.php/editCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
+            throw new Exception('Ошибка в Customers.php/editCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
         }
 
         $groups = new Application_Model_DbTable_Groups();
         if(!$groups->isRealID($group_id)) {
-            throw new Exception('Ошибка в Groups.php/editCustomer(). Неверный/несуществующий ID группы: ' . print_r($group_id));
+            throw new Exception('Ошибка в Customers.php/editCustomer(). Неверный/несуществующий ID группы: ' . print_r($group_id));
         }
 
         $data = array(
@@ -190,7 +190,7 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
     public function deleteCustomer($id) {
 
         if(!$this->isRealID($id)) {
-            throw new Exception('Ошибка в Groups.php/deleteCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
+            throw new Exception('Ошибка в Customers.php/deleteCustomer(). Неверный/несуществующий ID пользователя: ' . print_r($id));
         }
 
         // метод delete() возвращает количество затронутых рядов, сохраним его для проверки.
