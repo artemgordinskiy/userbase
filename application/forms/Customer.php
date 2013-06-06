@@ -6,8 +6,8 @@ class Application_Form_Customer extends Zend_Form
     public function init()
     {
         $customerID = $this->getAttrib('customerID');
-        $customerID = $customerID !== null ? $customerID : 0;
-
+        $userpicPath = $this->getAttrib('userpicPath');
+        $userpicPath = $userpicPath ? $userpicPath : false;
         $groupsArr = $this->getAttrib('groups');
 
         // «По-кошерному» включить файл со своим валидатором не получилось, поэтому пока так
@@ -21,56 +21,72 @@ class Application_Form_Customer extends Zend_Form
              ->setAttribs(array('class'=>'form-horizontal'));
 
         $id = new Zend_Form_Element_Hidden('id');
-        $id->addFilter('Int');
+        $id->addFilter('Int')
+           ->removeDecorator('htmlTag')
+           ->removeDecorator('DtDdWrapper')
+           ->removeDecorator('label');
+
+        $userpic_ext = new Zend_Form_Element_Hidden('userpic_ext');
+        $userpic_ext->addFilter('Alpha')
+                    ->removeDecorator('htmlTag')
+                    ->removeDecorator('DtDdWrapper')
+                    ->removeDecorator('label');
+
 
         $group = new Zend_Form_Element_Select('group_id');
-        $group->setLabel('Группа:')
-              ->addMultiOptions($groupsArr)
+        $group->addMultiOptions($groupsArr)
               ->addFilter('Int')
               ->addFilter('StripTags')
               ->addFilter('StringTrim')
-              ->addValidator('NotEmpty')
+              ->addValidator('NotEmpty', true)
               ->addValidator('Db_RecordExists', true,
                     array('table' => 'groups', 'field' => 'id',
                         'messages' => array('noRecordFound' => 'Указанной группы не существует')
                     )
-                );
+                )
+              ->removeDecorator('htmlTag')
+              ->removeDecorator('DtDdWrapper')
+              ->removeDecorator('label');
 
 
         $acc_exp_date = new Zend_Form_Element_Text('acc_exp_date');
-        $acc_exp_date->setLabel('Действует до:')
-                     ->setValue($dateInThreeMonths)
+        $acc_exp_date->setValue($dateInThreeMonths)
                      ->setRequired(true)
                      ->addFilter('StripTags')
                      ->addFilter('StringTrim')
-                     ->addValidator('NotEmpty')
+                     ->addValidator('NotEmpty', true)
                      ->addValidator('StringLength', false, array(19, 19))
-                     ->addValidator($exp_time_validator);
+                     ->addValidator($exp_time_validator)
+                     ->removeDecorator('htmlTag')
+                     ->removeDecorator('DtDdWrapper')
+                     ->removeDecorator('label');
 
         $pass = new Zend_Form_Element_Password('password');
-        $pass->setLabel('Пароль:')
-             ->setRequired(false)
+        $pass->setRequired(false)
              ->addFilter('StripTags')
              ->addFilter('StringTrim')
-             ->addValidator('NotEmpty')
-             ->addValidator('StringLength', false, array(5, 64));
+             ->addValidator('StringLength', false, array(5, 64))
+             ->removeDecorator('htmlTag')
+             ->removeDecorator('DtDdWrapper')
+             ->removeDecorator('label');
 
         $login = new Zend_Form_Element_Text('login');
-        $login->setLabel('Логин:')
-              ->setRequired(true)
+        $login->setRequired(true)
               ->addFilter('StripTags')
               ->addFilter('StringTrim')
-              ->addValidator('NotEmpty')
-              ->addValidator('StringLength', false, array(3, 64));
+              ->addValidator('NotEmpty', true)
+              ->addValidator('StringLength', false, array(3, 64))
+              ->removeDecorator('htmlTag')
+              ->removeDecorator('DtDdWrapper')
+              ->removeDecorator('label');
 
 
 
         $email = new Zend_Form_Element_Text('email');
-        $email->setLabel('Почта:')
-              ->setRequired(true)
+        $email->setRequired(true)
               ->addFilter('StripTags')
               ->addFilter('StringTrim')
-              ->addValidator('NotEmpty')
+              ->addValidator('NotEmpty', true)
               ->addValidator('EmailAddress')
               ->addValidator('StringLength', false, array(5, 64))
               ->addValidator('Db_NoRecordExists', true,
@@ -81,19 +97,33 @@ class Application_Form_Customer extends Zend_Form
                             'value' => $customerID
                         )
                     )
-                );
+                )
+              ->removeDecorator('htmlTag')
+              ->removeDecorator('DtDdWrapper')
+              ->removeDecorator('label');
 
         $image = new Zend_Form_Element_File('userpic');
-        $image->setLabel('Аватар:')
-              ->setRequired(false)
+        $image->setRequired(false)
               ->addValidator('Count', array(1))
-              ->addValidator('IsImage', false)
-              ->addValidator('Size', false, array(1048576 * 5))
-              ->addValidator('Extension', false, array('jpg,png,gif,jpeg'));
+              ->addValidator('IsImage', true)
+              ->addValidator('Size', true, array(1048576 * 5))
+              ->addValidator('Extension', false, array('jpg,png,gif,jpeg'))
+              ->removeDecorator('htmlTag')
+              ->removeDecorator('DtDdWrapper')
+              ->removeDecorator('label');
 
         $submit = new Zend_Form_Element_Submit('submit');
         $submit->setLabel('Отправить')
-               ->setAttribs(array('class'=>'btn'));
+               ->setAttribs(array('class'=>'btn'))
+               ->removeDecorator('DtDdWrapper');
+
+        $this->setDecorators(array(
+            array('ViewScript', array(
+                'viewScript' => '_form_customer.phtml',
+                'userpicPath' => $userpicPath
+                )
+            )
+        ));
 
         $this->addElements(array($id, $login, $pass, $email, $group, $acc_exp_date, $image, $submit));
 
