@@ -13,8 +13,7 @@ class CustomersController extends Zend_Controller_Action
         }
     }
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $customers = new Application_Model_DbTable_Customers();
         $pageNum = (int)$this->_getParam('p', 1);
         $currentSort = $this->_getParam('o', 'default');
@@ -31,9 +30,9 @@ class CustomersController extends Zend_Controller_Action
         $this->view->orderLinks = $this->getOrderLinks($currentSort);
     }
 
-    public function addAction()
-    {
+    public function addAction() {
         $id = (int)$this->_getParam('id', 0);
+        $userpic_ext = (int)$this->_getParam('userpic_ext', null);
         $groups = new Application_Model_DbTable_Groups();
         $groupsArr = $groups->getGroupsForTheForm();
         $form = new Application_Form_Customer(array('customerID' => $id, 'groups' => $groupsArr));
@@ -74,12 +73,20 @@ class CustomersController extends Zend_Controller_Action
         }
     }
 
-    public function editAction()
-    {
-        $id = (int)$this->_getParam('id', 0);
+    public function editAction() {
+        $id = (int)$this->_getParam('id', null);
+        $customers = new Application_Model_DbTable_Customers();
+        $userpic_ext = $customers->getUserpicExt($id);
         $groups = new Application_Model_DbTable_Groups();
         $groupsArr = $groups->getGroupsForTheForm();
-        $form = new Application_Form_Customer(array('customerID' => $id, 'groups' => $groupsArr));
+
+        if($id !== null && $userpic_ext !== false && strlen($userpic_ext) > 0 && file_exists(PUBLIC_PATH . '/images/uploads/' . $id . '.' . $userpic_ext)) {
+            $userpicPath = '/images/uploads/' . $id . '.' . $userpic_ext;
+        } else {
+            $userpicPath = '/images/uploads/anon.jpg';
+        }
+
+        $form = new Application_Form_Customer(array('customerID' => $id, 'userpicPath' => $userpicPath, 'groups' => $groupsArr));
 
         $form->submit->setLabel('Сохранить');
         $this->view->form = $form;
@@ -123,8 +130,7 @@ class CustomersController extends Zend_Controller_Action
         }
     }
 
-    public function deleteAction()
-    {
+    public function deleteAction() {
         if ($this->getRequest()->isPost()) {
             $del = $this->getRequest()->getPost('del');
             if($del === 'Да') {

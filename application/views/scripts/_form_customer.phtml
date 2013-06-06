@@ -1,0 +1,57 @@
+<form id="customer" enctype="multipart/form-data" class="form-horizontal" action="<?php echo $this->element->getAction(); ?>" method="<?php echo $this->element->getMethod(); ?>">
+    <?php echo $this->element->id; ?>
+    <?php echo $this->element->userpic_ext; ?>
+
+    <div class="control-group">
+        <label class="control-label" for="login">Логин </label>
+        <div class="controls">
+            <?php echo $this->element->login; ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="password">Пароль </label>
+        <div class="controls">
+            <?php echo $this->element->password; ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="email">Почта </label>
+        <div class="controls">
+            <?php echo $this->element->email; ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="group_id">Группа </label>
+        <div class="controls">
+            <?php echo $this->element->group_id; ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="userpic">Аватар </label>
+        <div class="controls">
+            <?php if ($this->userpicPath): ?>
+                <img class="img-polaroid" style="width: 150px; height: 150px;" src="<?php echo $this->userpicPath; ?>">
+                <br />
+                <br />
+            <?php endif; ?>
+            <?php echo $this->element->userpic; ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="acc_exp_date">Активен до </label>
+        <div class="controls">
+            <?php echo $this->element->acc_exp_date; ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <?php echo $this->element->submit; ?>
+        </div>
+    </div>
+</form>
