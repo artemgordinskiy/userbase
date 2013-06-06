@@ -295,4 +295,32 @@ class Application_Model_DbTable_Customers extends Zend_Db_Table_Abstract
         return true;
     }
 
+    public function getUserpicExt($id) {
+        $id = (int)$id;
+
+        if($id <= 0) {
+            return false;
+        }
+
+        if(!$this->isRealID($id)) {
+            throw new Exception('Ошибка в Customers.php/getUserpicExt(). Неверный/несуществующий ID пользователя: ' . print_r($id));
+        }
+
+        try {
+            $query = $this->select();
+            $query->from('customers', array('userpic_ext'))->where('id = ?', $id);
+            $userpic_ext = $this->_fetch($query);
+        } catch(PDOException $e) {
+            throw new Exception('Ошибка в Customers.php/getUserpicExt(): ' . $e->getMessage());
+        } catch(Exception $e) {
+            throw new Exception('Ошибка в Customers.php/getUserpicExt(): ' . $e->getMessage());
+        }
+
+        if(!is_array($userpic_ext)) {
+            throw new Exception('Ошибка в Customers.php/getUserpicExt(). Неправильный тип переменной. Содержимое: ' . print_r($userpic_ext));
+        }
+
+        return $userpic_ext[0]['userpic_ext'];
+    }
+
 }
