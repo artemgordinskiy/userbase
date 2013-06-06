@@ -26,13 +26,6 @@ class Application_Form_Customer extends Zend_Form
            ->removeDecorator('DtDdWrapper')
            ->removeDecorator('label');
 
-        $userpic_ext = new Zend_Form_Element_Hidden('userpic_ext');
-        $userpic_ext->addFilter('Alpha')
-                    ->removeDecorator('htmlTag')
-                    ->removeDecorator('DtDdWrapper')
-                    ->removeDecorator('label');
-
-
         $group = new Zend_Form_Element_Select('group_id');
         $group->addMultiOptions($groupsArr)
               ->addFilter('Int')
