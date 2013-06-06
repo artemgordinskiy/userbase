@@ -27,9 +27,21 @@ class Application_Form_Group extends Zend_Form
                             'value' => $groupID
                         )
                     )
-               );
+               )
+              ->removeDecorator('htmlTag')
+              ->removeDecorator('DtDdWrapper')
+              ->removeDecorator('label');
+
         $submit = new Zend_Form_Element_Submit('submit');
-        $submit->setAttrib('class', 'btn');
+        $submit->setAttrib('class', 'btn')
+               ->removeDecorator('DtDdWrapper');
+
+        $this->setDecorators(array(
+            array('ViewScript', array(
+                'viewScript' => '_form_group.phtml'
+                )
+            )
+        ));
 
         $this->addElements(array($id, $name, $submit));
     }

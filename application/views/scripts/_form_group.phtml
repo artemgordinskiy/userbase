@@ -1,0 +1,16 @@
+<form id="group" class="form-horizontal" action="<?php echo $this->element->getAction(); ?>" method="<?php echo $this->element->getMethod(); ?>">
+    <?php echo $this->element->id; ?>
+
+    <div class="control-group">
+        <label class="control-label" for="name">Название </label>
+        <div class="controls">
+            <?php echo $this->element->name; ?>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <?php echo $this->element->submit; ?>
+        </div>
+    </div>
+</form>
