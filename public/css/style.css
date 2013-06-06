@@ -144,8 +144,8 @@ table#groupsTable {
 }
 
 form {
-    width: 240px;
     margin: 0 auto;
+    width: 550px;
 }
 
 #submit-element {
